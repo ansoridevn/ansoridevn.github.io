@@ -306,10 +306,58 @@
             .data-value { text-align: left; font-size: 1.1rem; }
             .result-content { padding: 20px; }
         }
+        /* --- LOADING MODAL --- */
+        .loader-overlay {
+            position: fixed;
+            inset: 0; /* Menutupi seluruh layar */
+            background: rgba(255, 255, 255, 0.6); /* Latar belakang putih transparan */
+            backdrop-filter: blur(10px); /* Efek Blur di belakang */
+            z-index: 9999; /* Paling atas, menutupi navbar */
+            display: none; /* Sembunyi default */
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .loader-content {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .loader-content p {
+            margin-top: 15px;
+            margin-bottom: 0;
+            font-weight: 600;
+            color: var(--text-dark);
+            animation: pulse 1.5s infinite;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e2e8f0;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
-
+    <div id="loaderModal" class="loader-overlay">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <p>Memverifikasi Keaslian...</p>
+        </div>
+    </div>
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleMenu()"></div>
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
@@ -672,18 +720,6 @@
                         <p style="font-size: 0.85rem; margin-top: 10px;">Fullstack Engineer dengan pengalaman 8 tahun di industri software development.</p>
                         <a href="https://ahmadansori.com" class="btn btn-outline btn-sm" style="margin-top: 10px;">Portfolio</a>
                     </div>
-                    <div class="team-card">
-                        <img src="https://ui-avatars.com/api/?name=Ervin+Dwi&background=0ea5e9&color=fff&size=200" alt="Ervin" class="team-avatar">
-                        <h4>Ervin Dwi F.</h4>
-                        <p style="color: var(--primary); font-size: 0.9rem; font-weight: 600;">Head of Academy</p>
-                        <p style="font-size: 0.85rem; margin-top: 10px;">Praktisi pendidikan vokasi yang berfokus pada kurikulum berbasis kompetensi kerja.</p>
-                    </div>
-                    <div class="team-card">
-                        <img src="https://ui-avatars.com/api/?name=Maya+Sari&background=6366f1&color=fff&size=200" alt="Maya" class="team-avatar">
-                        <h4>Maya Sari</h4>
-                        <p style="color: var(--primary); font-size: 0.9rem; font-weight: 600;">Operations Manager</p>
-                        <p style="font-size: 0.85rem; margin-top: 10px;">Memastikan setiap proyek berjalan tepat waktu dan sesuai dengan kebutuhan klien.</p>
-                    </div>
                 </div>
             </div>
 
@@ -880,46 +916,77 @@
             }
         }
 
+        // --- 4. LOGIN SYSTEM (UPDATED) ---
         function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             const alertBox = document.getElementById('loginAlert');
+            
+            // 1. Ambil Loader & Ubah Teks
+            const loader = document.getElementById('loaderModal');
+            // Kita cari elemen <p> di dalam loader untuk ganti teks
+            const loaderText = document.querySelector('.loader-content p');
+            
+            // Reset alert sebelumnya (jika ada)
+            alertBox.style.display = 'none'; 
+            
+            // 2. Tampilkan Loader
+            loaderText.innerText = "Mengautentikasi Akun...";
+            loader.style.display = 'flex';
 
-            // Hardcoded Credentials
-            const VALID_USER = "area@ahmadansori.com";
-            const VALID_PASS = "password21!";
+            // 3. Simulasi Loading 2 Detik
+            setTimeout(() => {
+                loader.style.display = 'none'; // Sembunyikan loader
 
-            if (email === VALID_USER && pass === VALID_PASS) {
-                document.getElementById('loginForm').classList.add('hidden-page');
-                document.getElementById('loginSuccess').classList.remove('hidden-page');
-                alertBox.style.display = 'none';
-            } else {
-                alertBox.className = "alert alert-error";
-                alertBox.innerText = "Email atau Password salah. Silakan coba lagi.";
-                alertBox.style.display = "block";
-                
-                // Shake effect
-                const box = document.querySelector('.modal-box');
-                box.style.transform = "translateX(10px)";
-                setTimeout(() => box.style.transform = "translateX(0)", 100);
-            }
+                // 4. Logika Validasi Login
+                const VALID_USER = "area@ahmadansori.com";
+                const VALID_PASS = "password21!";
+
+                if (email === VALID_USER && pass === VALID_PASS) {
+                    document.getElementById('loginForm').classList.add('hidden-page');
+                    document.getElementById('loginSuccess').classList.remove('hidden-page');
+                } else {
+                    alertBox.className = "alert alert-error";
+                    alertBox.innerText = "Email atau Password salah. Silakan coba lagi.";
+                    alertBox.style.display = "block";
+                    
+                    // Shake effect
+                    const box = document.querySelector('.modal-box');
+                    box.style.transform = "translateX(10px)";
+                    setTimeout(() => box.style.transform = "translateX(0)", 100);
+                }
+            }, 2000);
         }
 
-        // --- 5. VERIFICATION LOGIC ---
+        // --- 5. VERIFICATION LOGIC (UPDATED) ---
         function manualCheck() {
             const inputVal = document.getElementById('certInput').value.trim();
-            verifyCertificate(inputVal);
+            if(!inputVal) return; 
+
+            const loader = document.getElementById('loaderModal');
+            const loaderText = document.querySelector('.loader-content p');
+
+            // 1. Setup Loader Sertifikat
+            loaderText.innerText = "Memverifikasi Keaslian..."; // Teks khusus sertifikat
+            loader.style.display = 'flex';
+
+            document.getElementById('resValid').classList.add('hidden-page');
+            document.getElementById('resInvalid').classList.add('hidden-page');
+
+            // 2. Tunggu 2 Detik
+            setTimeout(() => {
+                loader.style.display = 'none';
+                verifyCertificate(inputVal);
+            }, 2000); 
         }
 
         function verifyCertificate(id) {
             const validBox = document.getElementById('resValid');
             const invalidBox = document.getElementById('resInvalid');
             
-            validBox.classList.add('hidden-page');
-            invalidBox.classList.add('hidden-page');
-
-            if (!id) return;
+            // Pastikan input field terisi (untuk kasus auto-check dari URL)
+            document.getElementById('certInput').value = id;
 
             if (certDB[id]) {
                 const data = certDB[id];
@@ -939,7 +1006,7 @@
 
         // --- INIT ---
         window.onload = function() {
-            // Auto animate visible sections on load
+            // Auto animate visible sections
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) entry.target.classList.add('visible');
@@ -948,25 +1015,16 @@
 
             document.querySelectorAll('.section').forEach(s => observer.observe(s));
 
-            // --- FITUR BARU: AUTO VALIDATE FROM URL ---
-            // Cek apakah URL memiliki format #certificate/ID
+            // --- AUTO CHECK FROM URL ---
             const hash = window.location.hash;
             if (hash && hash.startsWith('#certificate/')) {
-                // Ambil ID setelah tanda slash. Contoh: #certificate/2026... -> 2026...
                 const certID = hash.split('/')[1];
-                
                 if (certID) {
-                    // 1. Pindah ke halaman validasi
                     navTo('validation');
-                    
-                    // 2. Isi kolom input agar user melihat ID nya
                     document.getElementById('certInput').value = certID;
                     
-                    // 3. Jalankan verifikasi otomatis
-                    // Diberi delay sedikit agar transisi halaman mulus
-                    setTimeout(() => {
-                        verifyCertificate(certID);
-                    }, 500);
+                    // Panggil manualCheck agar loading animation berjalan
+                    manualCheck(); 
                 }
             }
         };
