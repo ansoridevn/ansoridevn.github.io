@@ -60,7 +60,15 @@
         }
 
         .section {
-            padding-block: clamp(60px, 8vh, 100px); /* Jarak atas bawah responsive */
+            /* SEBELUMNYA: padding-block: clamp(60px, 8vh, 100px); */
+            
+            /* PERBAIKAN: */
+            /* Pisahkan padding atas & bawah. */
+            /* Padding atas harus > 80px (tinggi navbar) agar tidak tertutup. */
+            /* Kita beri 120px agar ada jarak lega yang estetis. */
+            padding-top: clamp(120px, 15vh, 150px); 
+            padding-bottom: clamp(60px, 8vh, 100px);
+
             opacity: 0; transform: translateY(30px); transition: 0.8s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .section.visible { opacity: 1; transform: translateY(0); }
@@ -637,7 +645,7 @@
                     <span class="text-gradient" style="font-weight: 700;">TENTANG KAMI</span>
                     <h2 style="font-size: 2.5rem;">Inovasi dari Lampung untuk Indonesia</h2>
                     <p style="font-size: 1.1rem;">
-                        GunaPedia (PT Guna Teknologi Indonesia) didirikan pada tahun 2021 dengan visi sederhana: 
+                        GunaPedia didirikan pada tahun 2021 dengan visi sederhana: 
                         <strong>Menjembatani kesenjangan teknologi di daerah.</strong>
                     </p>
                     <p>
@@ -684,7 +692,7 @@
                 <p>Jalan Way Umpu No. 50, Kota Metro, Lampung 34112</p>
                 <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
                     <span style="background: white; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);">📧 info@gunapedia.com</span>
-                    <span style="background: white; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);">📞 +62 812-3456-7890</span>
+                    <span style="background: white; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);">📞 +62 895-1531-8235</span>
                 </div>
             </div>
         </section>
@@ -786,7 +794,7 @@
                         <li>Jalan Way Umpu 50, Kota Metro</li>
                         <li>Lampung 34112, Indonesia</li>
                         <li style="margin-top: 15px; color: white;">info@gunapedia.com</li>
-                        <li style="color: white;">+62 812-3456-7890</li>
+                        <li style="color: white;">+62 895-1531-8235</li>
                     </ul>
                 </div>
             </div>
@@ -939,6 +947,28 @@
             }, { threshold: 0.1 });
 
             document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+            // --- FITUR BARU: AUTO VALIDATE FROM URL ---
+            // Cek apakah URL memiliki format #certificate/ID
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#certificate/')) {
+                // Ambil ID setelah tanda slash. Contoh: #certificate/2026... -> 2026...
+                const certID = hash.split('/')[1];
+                
+                if (certID) {
+                    // 1. Pindah ke halaman validasi
+                    navTo('validation');
+                    
+                    // 2. Isi kolom input agar user melihat ID nya
+                    document.getElementById('certInput').value = certID;
+                    
+                    // 3. Jalankan verifikasi otomatis
+                    // Diberi delay sedikit agar transisi halaman mulus
+                    setTimeout(() => {
+                        verifyCertificate(certID);
+                    }, 500);
+                }
+            }
         };
 
     </script>
