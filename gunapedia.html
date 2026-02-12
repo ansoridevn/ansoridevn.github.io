@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GunaPedia | Future Tech & Education</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* --- COLOR PALETTE (Modern Tech Blue) --- */
+            --white: #ffffff;
+            --off-white: #f8fafc;
+            --primary: #2563eb;       /* Royal Blue */
+            --primary-light: #60a5fa;
+            --primary-dark: #1e40af;
+            --accent: #0ea5e9;        /* Cyan */
+            --text-dark: #0f172a;     /* Slate 900 */
+            --text-gray: #64748b;     /* Slate 500 */
+            --border: #e2e8f0;
+            
+            /* Gradients */
+            --grad-logo: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+            --grad-bg: radial-gradient(circle at 10% 20%, rgb(239, 246, 255) 0%, rgb(255, 255, 255) 90%);
+            
+            /* Shadows */
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 10px 30px -5px rgba(37, 99, 235, 0.1);
+            --shadow-hover: 0 20px 40px -5px rgba(37, 99, 235, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- BACKGROUND MESH EFFECT --- */
+        .bg-mesh {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1;
+            background: var(--grad-bg);
+        }
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
+            animation: floatBlob 10s infinite alternate;
+        }
+        .blob-1 { top: -10%; right: -10%; width: 500px; height: 500px; background: #dbeafe; }
+        .blob-2 { bottom: -10%; left: -10%; width: 400px; height: 400px; background: #e0f2fe; animation-delay: -5s; }
+
+        @keyframes floatBlob { 0% { transform: translate(0, 0); } 100% { transform: translate(20px, 40px); } }
+
+        /* --- CONTAINER & LAYOUT (Improved Spacing) --- */
+        .container {
+            max-width: 1240px; /* Lebar ideal untuk layar modern */
+            margin: 0 auto;
+            padding: 0 40px; /* Padding kanan-kiri lebih lega */
+        }
+
+        @media (max-width: 768px) { .container { padding: 0 24px; } }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3, h4 { letter-spacing: -0.02em; line-height: 1.2; }
+        .text-gradient {
+            background: var(--grad-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 14px 32px; border-radius: 50px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-decoration: none; border: none;
+        }
+        .btn-primary {
+            background: var(--primary); color: white;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark); transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+        }
+        .btn-outline {
+            background: white; border: 1px solid var(--border); color: var(--text-dark);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary); color: var(--primary); background: #f0f9ff;
+        }
+
+        /* --- NAVBAR (Glassmorphism) --- */
+        nav {
+            position: fixed; top: 0; width: 100%; height: 80px; z-index: 1000;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            transition: 0.3s;
+        }
+        .nav-inner { height: 100%; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Logo Modern */
+        .logo { 
+            font-size: 1.6rem; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 8px;
+            color: var(--text-dark);
+        }
+        .logo-icon {
+            width: 32px; height: 32px; background: var(--grad-logo); border-radius: 8px;
+            display: grid; place-items: center; color: white; font-size: 18px;
+        }
+
+        .nav-links { display: flex; gap: 40px; }
+        .nav-item {
+            font-size: 0.95rem; font-weight: 500; color: var(--text-gray); text-decoration: none;
+            position: relative; transition: 0.3s;
+        }
+        .nav-item:hover, .nav-item.active { color: var(--primary); }
+        .nav-item.active::after {
+            content: ''; position: absolute; bottom: -28px; left: 0; width: 100%; height: 3px;
+            background: var(--primary); border-radius: 3px 3px 0 0;
+        }
+
+        /* --- SECTIONS (Animation) --- */
+        .section {
+            padding: 120px 0; /* Jarak vertikal yang lega */
+            opacity: 0; transform: translateY(20px); transition: 0.6s ease-out;
+        }
+        .section.visible { opacity: 1; transform: translateY(0); }
+        .hidden-page { display: none; }
+        .active-page { display: block; animation: fadeInPage 0.5s ease forwards; }
+
+        @keyframes fadeInPage { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- HERO --- */
+        .hero-wrapper {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; min-height: 85vh;
+        }
+        .hero-badge {
+            display: inline-block; padding: 6px 16px; background: #eff6ff; color: var(--primary);
+            border-radius: 30px; font-size: 0.85rem; font-weight: 700; margin-bottom: 24px;
+            border: 1px solid #dbeafe;
+        }
+        .hero-text h1 { font-size: 3.8rem; margin-bottom: 24px; line-height: 1.1; }
+        .hero-text p { font-size: 1.2rem; color: var(--text-gray); margin-bottom: 40px; max-width: 90%; }
+        
+        .hero-image {
+            position: relative;
+            animation: floatImage 6s ease-in-out infinite;
+        }
+        .hero-card-visual {
+            background: white; border-radius: 24px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.8);
+            position: relative; z-index: 2;
+        }
+        .code-block {
+            font-family: monospace; font-size: 0.85rem; background: #1e293b; color: #38bdf8;
+            padding: 20px; border-radius: 12px; margin-top: 15px;
+        }
+
+        @keyframes floatImage { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* --- CARDS (Glassy & Hover) --- */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
+        
+        .card {
+            background: white; border: 1px solid var(--border); border-radius: 20px; padding: 40px;
+            transition: all 0.4s ease; position: relative; overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-10px); box-shadow: var(--shadow-hover); border-color: var(--primary-light);
+        }
+        .card-icon {
+            width: 64px; height: 64px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            color: var(--primary); border-radius: 16px; display: grid; place-items: center;
+            font-size: 1.8rem; margin-bottom: 24px;
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+            background: var(--grad-logo); transform: scaleX(0); transform-origin: left; transition: 0.4s;
+        }
+        .card:hover::before { transform: scaleX(1); }
+
+        /* --- TECH STACK STRIP --- */
+        .tech-strip {
+            margin-top: 80px; padding: 40px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+        .tech-logos {
+            display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; opacity: 0.6; margin-top: 20px;
+            font-weight: 700; font-size: 1.2rem; color: #94a3b8;
+        }
+
+        /* --- ACADEMY ACCORDION --- */
+        .accordion-item {
+            background: white; border: 1px solid var(--border); border-radius: 16px; margin-bottom: 20px;
+            overflow: hidden; transition: 0.3s;
+        }
+        .accordion-item:hover { border-color: var(--primary-light); }
+        summary {
+            padding: 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            font-weight: 700; list-style: none;
+        }
+        .accordion-content {
+            padding: 0 24px 24px; border-top: 1px solid var(--border); background: #fcfcfc; color: var(--text-gray);
+        }
+        
+        /* --- VALIDATION UI --- */
+        .verify-container { max-width: 600px; margin: 0 auto; text-align: center; }
+        .input-group { position: relative; margin-bottom: 30px; display: flex; gap: 10px; }
+        .input-modern {
+            width: 100%; padding: 16px 20px; border: 2px solid var(--border); border-radius: 12px;
+            font-size: 1rem; outline: none; transition: 0.3s; background: white;
+        }
+        .input-modern:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        
+        .result-box {
+            background: white; border-radius: 16px; box-shadow: var(--shadow-card); overflow: hidden;
+            text-align: left; margin-top: 20px; border: 1px solid var(--border);
+        }
+        .result-header { padding: 15px; color: white; font-weight: 700; text-align: center; letter-spacing: 1px; }
+        .bg-success { background: #10b981; }
+        .bg-error { background: #ef4444; }
+        .result-body { padding: 30px; }
+        .row-detail { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .row-detail:last-child { border-bottom: none; }
+        
+        /* --- FOOTER --- */
+        footer { background: white; border-top: 1px solid var(--border); padding-top: 80px; margin-top: 100px; }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 50px; padding-bottom: 60px; }
+        .footer-bottom { 
+            text-align: center; padding: 30px 0; border-top: 1px solid var(--border); color: var(--text-gray); font-size: 0.9rem; 
+        }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            .hero-wrapper { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .hero-text h1 { font-size: 2.5rem; }
+            .hero-image { display: none; } /* Hide visual on mobile for simplicity */
+            .nav-links { display: none; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+            .row-detail { flex-direction: column; gap: 5px; text-align: center; }
+            .row-detail span:last-child { font-weight: 700; }
+        }
+
+        .hide { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-mesh">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav>
+        <div class="container nav-inner">
+            <a href="#home" class="logo">
+                <div class="logo-icon">G</div>
+                <span class="text-gradient">GunaPedia</span>
+            </a>
+            
+            <div class="nav-links">
+                <a href="#home" class="nav-item active" id="link-home">Beranda</a>
+                <a href="#solutions" class="nav-item" id="link-solutions">Solusi</a>
+                <a href="#academy" class="nav-item" id="link-academy">Akademi</a>
+                <a href="#about" class="nav-item" id="link-about">Tentang Kami</a>
+                <a href="#verification" class="nav-item" id="link-verification" style="color: var(--primary); font-weight: 700;">Cek Sertifikat</a>
+            </div>
+
+            <a href="https://wa.me/6281234567890" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.9rem;">
+                Hubungi Kami
+            </a>
+        </div>
+    </nav>
+
+    <div id="home" class="active-page">
+        <section class="section visible">
+            <div class="container hero-wrapper">
+                <div class="hero-text">
+                    <span class="hero-badge">🚀 #1 Digital Transformation Partner</span>
+                    <h1>Bangun Ekosistem <br> <span class="text-gradient">Masa Depan Anda</span></h1>
+                    <p>Dari pengembangan <strong>Software Enterprise</strong>, sistem <strong>IoT Cerdas</strong>, hingga <strong>Manajemen Cloud</strong>. Kami mengubah kompleksitas teknologi menjadi solusi bisnis yang sederhana.</p>
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                        <a href="#solutions" class="btn btn-primary">Lihat Layanan Kami</a>
+                        <a href="#verification" class="btn btn-outline">Validasi Sertifikat</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-card-visual">
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
+                            <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+                            <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+                        </div>
+                        <h3>System Architecture</h3>
+                        <p style="font-size: 0.9rem; color: #64748b;">Optimized for scale & security.</p>
+                        <div class="code-block">
+                            > Initiating IoT Protocol...<br>
+                            > Connecting to Cloud Server...<br>
+                            > <span style="color:#4ade80">System Ready.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="tech-strip">
+            <div class="container">
+                <p style="font-size: 0.9rem; color: var(--text-gray); text-transform: uppercase; letter-spacing: 1px;">Powered by Modern Technology</p>
+                <div class="tech-logos">
+                    <span>PYTHON</span>
+                    <span>REACT</span>
+                    <span>FLUTTER</span>
+                    <span>AWS CLOUD</span>
+                    <span>ARDUINO IoT</span>
+                    <span>DOCKER</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="section visible container">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem;">Mengapa GunaPedia?</h2>
+                <p style="color: var(--text-gray);">Pendekatan kami terstruktur untuk hasil maksimal.</p>
+            </div>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Fast & Scalable</h3>
+                    <p style="color: var(--text-gray);">Arsitektur software yang kami bangun siap menangani jutaan pengguna tanpa mengorbankan kecepatan.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛡️</div>
+                    <h3>Security First</h3>
+                    <p style="color: var(--text-gray);">Keamanan data adalah prioritas. Implementasi enkripsi standar industri di setiap layer aplikasi.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🤝</div>
+                    <h3>Lifetime Support</h3>
+                    <p style="color: var(--text-gray);">Kami tidak hanya membangun, tapi merawat. Dukungan teknis berkelanjutan untuk bisnis Anda.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="solutions" class="hidden-page">
+        <section class="section visible container">
+            <div style="margin-bottom: 60px;">
+                <span class="text-gradient" style="font-weight: 700;">LAYANAN KAMI</span>
+                <h2 style="font-size: 3rem; margin-top: 10px;">Solusi End-to-End</h2>
+            </div>
+
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon">💻</div>
+                    <h3>Software Development</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 20px;">
+                        Pembuatan Website Company Profile, E-Commerce, hingga Sistem Informasi Manajemen (ERP) berbasis web.
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span style="font-size: 0.8rem; background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">Laravel</span>
+                        <span style="font-size: 0.8rem; background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">React.js</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📡</div>
+                    <h3>Internet of Things</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 20px;">
+                        Sistem Smart Home, Monitoring Pertanian Cerdas, dan Otomatisasi Industri menggunakan mikrokontroler.
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span style="font-size: 0.8rem; background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">ESP32</span>
+                        <span style="font-size: 0.8rem; background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">MQTT</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">☁️</div>
+                    <h3>Cloud Management</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 20px;">
+                        Setup VPS, Migrasi Cloud (AWS/GCP), dan manajemen DevOps untuk memastikan uptime 99.9%.
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span style="font-size: 0.8rem; background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">Docker</span>
+                        <span style="font-size: 0.8rem; background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">Linux</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="academy" class="hidden-page">
+        <section class="section visible container">
+            <div style="text-align: center; max-width: 700px; margin: 0 auto 60px;">
+                <h2 style="font-size: 3rem;">GunaPedia Academy</h2>
+                <p style="color: var(--text-gray);">Kurikulum disusun oleh praktisi industri untuk mencetak talenta digital siap kerja.</p>
+            </div>
+
+            <div style="max-width: 900px; margin: 0 auto;">
+                
+                <details class="accordion-item">
+                    <summary>
+                        <span>📘 Microsoft Office Specialist</span>
+                        <span style="font-size: 0.85rem; color: var(--primary);">Lihat Silabus ↓</span>
+                    </summary>
+                    <div class="accordion-content">
+                        <ul style="padding-left: 20px; line-height: 2;">
+                            <li>Pengenalan Interface Word & Excel</li>
+                            <li>Formatting Dokumen Resmi & Mail Merge</li>
+                            <li>Rumus Excel Dasar (SUM, IF, AVERAGE)</li>
+                            <li>Rumus Excel Lanjut (VLOOKUP, HLOOKUP, Pivot)</li>
+                            <li>Visualisasi Data & Dashboarding</li>
+                            <li>Studi Kasus Administrasi Perkantoran</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="accordion-item">
+                    <summary>
+                        <span>🌐 Fullstack Web Developer</span>
+                        <span style="font-size: 0.85rem; color: var(--primary);">Lihat Silabus ↓</span>
+                    </summary>
+                    <div class="accordion-content">
+                        <ul style="padding-left: 20px; line-height: 2;">
+                            <li>HTML5, CSS3, & Responsive Design</li>
+                            <li>JavaScript Modern (ES6+) & DOM</li>
+                            <li>Backend dengan PHP & MySQL</li>
+                            <li>Framework Laravel / React.js</li>
+                            <li>Deployment ke Hosting & Domain</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="accordion-item">
+                    <summary>
+                        <span>🤖 IoT & Python Automation</span>
+                        <span style="font-size: 0.85rem; color: var(--primary);">Lihat Silabus ↓</span>
+                    </summary>
+                    <div class="accordion-content">
+                        <ul style="padding-left: 20px; line-height: 2;">
+                            <li>Dasar Pemrograman Python</li>
+                            <li>Pengenalan Mikrokontroler (Arduino/ESP32)</li>
+                            <li>Sensor Reading & Actuator Control</li>
+                            <li>Web Scraping & Browser Automation</li>
+                            <li>Proyek Akhir: Smart System</li>
+                        </ul>
+                    </div>
+                </details>
+
+            </div>
+        </section>
+    </div>
+
+    <div id="about" class="hidden-page">
+        <section class="section visible container">
+            <div class="grid-3" style="align-items: center;">
+                <div style="grid-column: span 2;">
+                    <span class="text-gradient" style="font-weight: 700;">TENTANG KAMI</span>
+                    <h2 style="font-size: 3rem; margin-bottom: 20px;">Inovasi dari Lampung untuk Indonesia</h2>
+                    <p style="color: var(--text-gray); font-size: 1.1rem; margin-bottom: 20px;">
+                        GunaPedia didirikan dengan visi menjembatani kesenjangan teknologi. Kami percaya bahwa teknologi canggih harus dapat diakses oleh semua kalangan bisnis, mulai dari UMKM hingga korporasi besar.
+                    </p>
+                    
+                    <div style="background: var(--off-white); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-top: 20px;">
+                        <h4 style="margin-bottom: 10px;">📍 Kantor Pusat</h4>
+                        <p style="color: var(--text-dark);">
+                            <strong>Jalan Way Umpu 50</strong><br>
+                            Kota Metro, Lampung 34112<br>
+                            Indonesia
+                        </p>
+                        <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+                        <p style="font-size: 0.9rem;">
+                            <strong>Legalitas (NIB):</strong> 0203010050693
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card" style="text-align: center;">
+                    <div style="width: 100px; height: 100px; background: #e2e8f0; border-radius: 50%; margin: 0 auto 20px; overflow: hidden;">
+                        <img src="https://ui-avatars.com/api/?name=Ahmad+Ansori&background=2563eb&color=fff&size=200" alt="Ahmad Ansori" width="100%">
+                    </div>
+                    <h3>Ahmad Ansori</h3>
+                    <p style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">Founder & Head of GunaPedia</p>
+                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-top: 15px;">
+                        "Teknologi bukan hanya tentang kode, tapi tentang solusi."
+                    </p>
+                    <a href="https://ahmadansori.com" target="_blank" class="btn btn-outline" style="margin-top: 20px; width: 100%;">Website Pribadi</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="verification" class="hidden-page">
+        <section class="section visible container">
+            <div class="verify-container">
+                <h2 style="font-size: 2.5rem; margin-bottom: 10px;">Verifikasi Sertifikat</h2>
+                <p style="color: var(--text-gray); margin-bottom: 40px;">Masukkan nomor sertifikat untuk mengecek keaslian data.</p>
+
+                <div class="input-group">
+                    <input type="text" id="certInput" class="input-modern" placeholder="Contoh: 2021-09-IOTA-8843">
+                    <button class="btn btn-primary" onclick="manualCheck()">Cek</button>
+                </div>
+
+                <div id="resValid" class="result-box hide">
+                    <div class="result-header bg-success">✓ SERTIFIKAT VALID</div>
+                    <div class="result-body">
+                        <div class="row-detail">
+                            <span style="color: var(--text-gray);">Nomor Sertifikat</span>
+                            <span id="vNo">...</span>
+                        </div>
+                        <div class="row-detail">
+                            <span style="color: var(--text-gray);">Penerima</span>
+                            <span id="vName" style="font-weight: 700; color: var(--primary); font-size: 1.1rem;">...</span>
+                        </div>
+                        <div class="row-detail">
+                            <span style="color: var(--text-gray);">Program</span>
+                            <div style="text-align: right;">
+                                <span id="vCourse">...</span><br>
+                                <small style="color: var(--text-gray);" id="vCourseEn">...</small>
+                            </div>
+                        </div>
+                        <div class="row-detail">
+                            <span style="color: var(--text-gray);">Tanggal Terbit</span>
+                            <span id="vDate">...</span>
+                        </div>
+                        <div class="row-detail" style="border:none;">
+                            <span style="color: var(--text-gray);">Penandatangan</span>
+                            <div style="text-align: right;">
+                                <span id="vSign1">...</span><br>
+                                <span id="vSign2">...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="resInvalid" class="result-box hide">
+                    <div class="result-header bg-error">✕ DATA TIDAK DITEMUKAN</div>
+                    <div class="result-body" style="text-align: center; color: var(--text-gray);">
+                        Nomor sertifikat tidak ditemukan di database kami.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="logo" style="margin-bottom: 20px;">
+                        <div class="logo-icon">G</div>
+                        <span>GunaPedia</span>
+                    </div>
+                    <p style="color: var(--text-gray); font-size: 0.9rem;">
+                        Mitra transformasi digital terdepan di Indonesia. Mengubah ide menjadi realitas teknologi.
+                    </p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 20px;">Perusahaan</h4>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 10px;"><a href="#about" style="text-decoration: none; color: var(--text-gray);">Tentang Kami</a></li>
+                        <li style="margin-bottom: 10px;"><a href="#solutions" style="text-decoration: none; color: var(--text-gray);">Portofolio</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 20px;">Layanan</h4>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 10px;"><a href="#solutions" style="text-decoration: none; color: var(--text-gray);">Software Dev</a></li>
+                        <li style="margin-bottom: 10px;"><a href="#solutions" style="text-decoration: none; color: var(--text-gray);">IoT Systems</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 20px;">Kontak</h4>
+                    <p style="color: var(--text-gray); font-size: 0.9rem;">
+                        Jalan Way Umpu 50<br>Kota Metro, Lampung 34112<br><br>
+                        info@gunapedia.com
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 GunaPedia Digital Solutions.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. DATA DATABASE
+        const db = {
+            "2026-02-MSWE-089": {
+                no: "2026/02/MSWE/089",
+                name: "Izaz Daffa Harsya",
+                course: "Spesialisasi Microsoft Word & Excel",
+                courseEn: "Specialized Expertise in Microsoft Word & Excel",
+                date: "12 Februari 2026",
+                sign1: "Ervin Dwi Faturrahman (Teacher)",
+                sign2: "Ahmad Ansori (Head of GunaPedia)"
+            }
+        };
+
+        // 2. ROUTING & ANIMATION
+        function router() {
+            let hash = window.location.hash || '#home';
+            
+            // Clean nav active state
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.hidden-page, .active-page').forEach(el => {
+                el.classList.remove('active-page');
+                el.classList.add('hidden-page');
+            });
+
+            // Logic khusus Verification URL
+            if (hash.startsWith('#certificate/')) {
+                const id = hash.split('/')[1];
+                switchPage('verification');
+                verify(id);
+                document.getElementById('link-verification').classList.add('active');
+            } else {
+                const id = hash.replace('#', '');
+                switchPage(id);
+                const navLink = document.getElementById('link-' + id);
+                if(navLink) navLink.classList.add('active');
+            }
+        }
+
+        function switchPage(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('hidden-page');
+                el.classList.add('active-page');
+                
+                // Trigger animation for sections
+                setTimeout(() => {
+                    el.querySelectorAll('.section').forEach(sec => sec.classList.add('visible'));
+                }, 100);
+                
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // 3. VERIFICATION LOGIC
+        function verify(id) {
+            // Bersihkan format input jika ada perbedaan separator
+            let searchId = id; 
+            
+            // Populate input field
+            document.getElementById('certInput').value = id;
+
+            const data = db[searchId];
+            const valid = document.getElementById('resValid');
+            const invalid = document.getElementById('resInvalid');
+
+            valid.classList.add('hide');
+            invalid.classList.add('hide');
+
+            if (data) {
+                valid.classList.remove('hide');
+                document.getElementById('vNo').innerText = data.no;
+                document.getElementById('vName').innerText = data.name;
+                document.getElementById('vCourse').innerText = data.course;
+                document.getElementById('vCourseEn').innerText = data.courseEn;
+                document.getElementById('vDate').innerText = data.date;
+                document.getElementById('vSign1').innerText = data.sign1;
+                document.getElementById('vSign2').innerText = data.sign2;
+            } else {
+                invalid.classList.remove('hide');
+            }
+        }
+
+        function manualCheck() {
+            const val = document.getElementById('certInput').value.trim();
+            if (val) window.location.hash = `#certificate/${val}`;
+        }
+
+        // Init
+        window.addEventListener('load', router);
+        window.addEventListener('hashchange', router);
+        
+        // Scroll Animation Observer (Optional Polish)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        });
+        document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+    </script>
+</body>
+</html>
