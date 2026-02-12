@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ahmad Ansori - Creative Developer</title>
+    <title>Ahmad Ansori - Creative Developer & Tax Consultant</title>
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- DESIGN SYSTEM 2026 (Warm Minimalism) --- */
+        /* --- DESIGN SYSTEM 2026 --- */
         :root {
             --bg-base: #FFFCF5;        
             --bg-surface: #FFFFFF;     
@@ -23,10 +23,14 @@
             --text-muted: #57534E;     
             --border-subtle: #E7E5E4;
             
+            /* Service Colors */
+            --tax-green: #059669; --tax-soft: #D1FAE5;
+            --cloud-blue: #2563EB; --cloud-soft: #DBEAFE;
+            --legal-maroon: #9F1239; --legal-soft: #FFE4E6;
+
             --shadow-sm: 0 2px 4px rgba(28, 25, 23, 0.02);
             --shadow-md: 0 12px 24px -6px rgba(28, 25, 23, 0.06);
             --radius-lg: 24px;
-            
             --transition: cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s;
         }
 
@@ -44,26 +48,56 @@
 
         h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 600; color: var(--text-main); }
 
+        /* --- LANGUAGE SPLASH --- */
+        #lang-splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-base); z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease-out;
+        }
+        .splash-content { text-align: center; animation: fadeUp 0.8s ease; }
+        .lang-card-container { display: flex; gap: 20px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
+        .lang-card {
+            background: white; padding: 30px 40px; border-radius: 20px;
+            border: 2px solid var(--border-subtle); cursor: pointer;
+            transition: var(--transition); text-align: center; min-width: 200px;
+        }
+        .lang-card:hover { transform: translateY(-5px); border-color: var(--accent-gold); box-shadow: var(--shadow-md); }
+        .lang-flag { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .lang-title { font-weight: 700; color: var(--text-main); }
+
         /* --- NAVIGATION --- */
         .nav-wrapper {
             position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
-            z-index: 100; width: 90%; max-width: 600px;
+            z-index: 100; width: 95%; max-width: 900px;
         }
         .nav-glass {
-            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.6); padding: 8px 12px;
             border-radius: 100px; display: flex; justify-content: space-between;
-            align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow-x: auto;
         }
-        .nav-brand { font-weight: 700; padding: 0 16px; color: var(--text-main); text-decoration: none; }
-        .nav-links { display: flex; gap: 4px; }
+        .nav-brand { font-weight: 700; padding: 0 16px; color: var(--text-main); text-decoration: none; white-space: nowrap;}
+        .nav-links { display: flex; gap: 2px; align-items: center; }
         .nav-btn {
-            background: transparent; border: none; padding: 10px 20px;
+            background: transparent; border: none; padding: 10px 14px;
             border-radius: 100px; font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
-            cursor: pointer; transition: all 0.3s ease;
+            font-size: 0.8rem; font-weight: 600; color: var(--text-muted);
+            cursor: pointer; transition: all 0.3s ease; white-space: nowrap;
         }
         .nav-btn:hover, .nav-btn.active { background: var(--text-main); color: white; }
+        
+        .lang-toggle {
+            margin-left: 10px; padding: 8px 12px; border: 1px solid var(--border-subtle);
+            border-radius: 100px; cursor: pointer; font-size: 0.75rem; font-weight: 700;
+            background: white; color: var(--text-main); transition: 0.3s;
+        }
+        .lang-toggle:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+        
+        /* Specific Nav Colors */
+        #btn-tax.active { background: var(--tax-green); color: white; }
+        #btn-cloud.active { background: var(--cloud-blue); color: white; }
+        #btn-trans.active { background: var(--legal-maroon); color: white; }
 
         /* --- LAYOUT --- */
         #app { max-width: 1200px; margin: 0 auto; padding: 120px 24px 60px 24px; min-height: 100vh; }
@@ -88,120 +122,123 @@
             border-radius: 8px; font-size: 0.85rem; color: var(--text-muted); display: inline-block; margin: 0 5px 8px 0;
         }
         
-        /* Timeline */
+        /* Service Cards */
+        .service-card {
+            background: #FAFAFA; border-radius: 16px; padding: 20px;
+            display: flex; align-items: center; gap: 15px; margin-bottom: 15px;
+            border: 1px solid transparent; transition: 0.3s;
+        }
+        .service-card:hover { border-color: var(--accent-gold); background: #FFF; box-shadow: var(--shadow-sm); }
+        .service-icon {
+            width: 50px; height: 50px; background: var(--accent-soft); color: var(--accent-gold);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+        }
+        
+        /* Stats & Highlights */
+        .stat-card {
+            text-align: center; padding: 20px; background: white; border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+        }
+        .stat-num { font-size: 2.5rem; font-weight: 700; font-family: 'Playfair Display', serif; }
+        .stat-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+
+        /* Colors for Specific Pages */
+        .text-tax { color: var(--tax-green); } .bg-tax-soft { background: var(--tax-soft); } .bento-tax:hover { border-color: var(--tax-green); }
+        .text-cloud { color: var(--cloud-blue); } .bg-cloud-soft { background: var(--cloud-soft); } .bento-cloud:hover { border-color: var(--cloud-blue); }
+        .text-legal { color: var(--legal-maroon); } .bg-legal-soft { background: var(--legal-soft); } .bento-legal:hover { border-color: var(--legal-maroon); }
+
+        /* Timeline & Resume */
         .timeline-item {
-            position: relative; padding-bottom: 30px; padding-left: 24px;
-            border-left: 2px solid var(--border-subtle);
+            position: relative; padding-bottom: 30px; padding-left: 24px; border-left: 2px solid var(--border-subtle);
         }
         .timeline-item:last-child { border-left: 2px solid transparent; }
         .timeline-item::before {
             content: ''; position: absolute; left: -6px; top: 5px; width: 10px; height: 10px;
-            background: var(--accent-gold); border-radius: 50%; border: 2px solid white;
-            box-shadow: 0 0 0 2px var(--accent-soft);
+            background: var(--accent-gold); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px var(--accent-soft);
         }
-        .time-year {
-            font-size: 0.8rem; font-weight: 700; color: var(--accent-gold);
-            background: var(--accent-soft); padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 6px;
-        }
-
-        /* Award & Cert Item */
-        .award-item {
-            display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start;
-            padding-bottom: 20px; border-bottom: 1px solid var(--bg-base);
-        }
+        .time-year { font-size: 0.8rem; font-weight: 700; color: var(--accent-gold); background: var(--accent-soft); padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
+        .award-item { display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start; padding-bottom: 20px; border-bottom: 1px solid var(--bg-base); }
         .award-item:last-child { border-bottom: none; }
-        .award-icon {
-            min-width: 48px; height: 48px; background: var(--accent-soft);
-            border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            color: var(--accent-gold); font-size: 1.2rem;
-        }
-        
-        .cert-highlight {
-            background: linear-gradient(135deg, #FFFBEB 0%, #FFF 100%);
-            border: 1px solid #FCD34D; border-radius: 16px; padding: 20px;
-            margin-bottom: 30px; display: flex; gap: 16px; align-items: center;
-        }
+        .award-icon { min-width: 48px; height: 48px; background: var(--accent-soft); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--accent-gold); font-size: 1.2rem; }
+        .cert-highlight { background: linear-gradient(135deg, #FFFBEB 0%, #FFF 100%); border: 1px solid #FCD34D; border-radius: 16px; padding: 20px; margin-bottom: 30px; display: flex; gap: 16px; align-items: center; }
 
         /* Project Cards */
-        .project-card {
-            background: white; border-radius: var(--radius-lg); overflow: hidden;
-            border: 1px solid var(--border-subtle); transition: var(--transition);
-            cursor: pointer; height: 100%; display: flex; flex-direction: column;
-        }
+        .project-card { background: white; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-subtle); transition: var(--transition); cursor: pointer; height: 100%; display: flex; flex-direction: column; }
         .project-card:hover { transform: scale(1.02); border-color: var(--accent-gold); }
-        
-        .project-art {
-            width: 100%; height: 180px; display: flex; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-        }
+        .project-art { width: 100%; height: 180px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
         .project-art i { font-size: 3.5rem; color: white; z-index: 2; text-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .project-art::after {
-            content: ''; position: absolute; width: 150%; height: 150%;
-            background: rgba(255,255,255,0.1); transform: rotate(45deg); top: -50%; left: -50%;
-        }
-
+        .project-art::after { content: ''; position: absolute; width: 150%; height: 150%; background: rgba(255,255,255,0.1); transform: rotate(45deg); top: -50%; left: -50%; }
+        
         .grad-1 { background: linear-gradient(135deg, #F59E0B, #D97706); } 
         .grad-2 { background: linear-gradient(135deg, #3B82F6, #1D4ED8); } 
         .grad-3 { background: linear-gradient(135deg, #10B981, #047857); } 
         .grad-4 { background: linear-gradient(135deg, #6366F1, #4338CA); } 
         .grad-private { background: linear-gradient(135deg, #57534E, #292524); }
+        .grad-tax { background: linear-gradient(135deg, #059669, #047857); }
+        .grad-cloud { background: linear-gradient(135deg, #2563EB, #1E40AF); }
+        .grad-legal { background: linear-gradient(135deg, #9F1239, #881337); }
 
         .project-info { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
         .tech-stack { margin-top: auto; padding-top: 15px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--bg-base); }
-        .private-badge {
-            font-size: 0.7rem; background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 700;
-        }
+        .private-badge { font-size: 0.7rem; background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 700; }
+        .tax-badge { font-size: 0.7rem; background: var(--tax-soft); color: var(--tax-green); padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 700; }
+        .cloud-badge { font-size: 0.7rem; background: var(--cloud-soft); color: var(--cloud-blue); padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 700; }
+        .legal-badge { font-size: 0.7rem; background: var(--legal-soft); color: var(--legal-maroon); padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 700; }
 
-        /* Form & Buttons */
-        .input-field {
-            width: 100%; padding: 16px; background: var(--bg-base);
-            border: 1px solid var(--border-subtle); border-radius: 12px;
-            font-family: inherit; margin-bottom: 20px; transition: 0.3s;
-        }
+        /* Inputs & Buttons */
+        .input-field { width: 100%; padding: 16px; background: var(--bg-base); border: 1px solid var(--border-subtle); border-radius: 12px; font-family: inherit; margin-bottom: 20px; transition: 0.3s; }
         .input-field:focus { outline: none; border-color: var(--accent-gold); background: white; }
-        .btn-primary {
-            background: var(--text-main); color: white; border: none; padding: 14px 28px;
-            border-radius: 100px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block;
-        }
+        .btn-primary { background: var(--text-main); color: white; border: none; padding: 14px 28px; border-radius: 100px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
         .btn-primary:hover { background: var(--accent-gold); }
-
-        /* Game Canvas Style */
-        .game-canvas {
-            background: #1C1917;
-            border-radius: 16px;
-            width: 100%;
-            height: 250px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-        }
+        .game-canvas { background: #1C1917; border-radius: 16px; width: 100%; height: 250px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
 
         /* Utilities */
-        .col-span-12 { grid-column: span 12; }
-        .col-span-8 { grid-column: span 8; }
-        .col-span-6 { grid-column: span 6; }
-        .col-span-4 { grid-column: span 4; }
+        .col-span-12 { grid-column: span 12; } .col-span-8 { grid-column: span 8; } .col-span-6 { grid-column: span 6; } .col-span-4 { grid-column: span 4; }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .bento-grid { grid-template-columns: 1fr; }
             .col-span-12, .col-span-8, .col-span-6, .col-span-4 { grid-column: span 1 !important; }
             .hero-title { font-size: 2.5rem; }
             .nav-wrapper { width: 95%; top: 16px; }
-            .nav-brand { display: none; }
-            .nav-glass { justify-content: center; }
+            .nav-glass { overflow-x: auto; padding: 8px; justify-content: start; }
+            .nav-links { gap: 5px; }
             #app { padding-top: 100px; }
             .game-grid { grid-template-columns: 1fr !important; }
+            .lang-card-container { flex-direction: column; }
         }
     </style>
 </head>
 <body>
+
+    <div id="lang-splash">
+        <div class="splash-content">
+            <h1 style="font-size: 3rem; margin-bottom: 10px;">Welcome.</h1>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Please select your preferred language</p>
+            <div class="lang-card-container">
+                <div class="lang-card" onclick="setLanguage('id')">
+                    <span class="lang-flag">🇮🇩</span>
+                    <span class="lang-title">Bahasa Indonesia</span>
+                </div>
+                <div class="lang-card" onclick="setLanguage('en')">
+                    <span class="lang-flag">🇺🇸</span>
+                    <span class="lang-title">English (US)</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="nav-wrapper">
         <nav class="nav-glass">
             <a href="#" class="nav-brand" onclick="render('home')">Ansori.</a>
             <div class="nav-links">
                 <button class="nav-btn active" onclick="render('home')" id="btn-home">Home</button>
+                <button class="nav-btn" onclick="render('tax')" id="btn-tax">Tax</button>
+                <button class="nav-btn" onclick="render('cloud')" id="btn-cloud">Cloud</button>
+                <button class="nav-btn" onclick="render('trans')" id="btn-trans">Translator</button>
                 <button class="nav-btn" onclick="render('resume')" id="btn-resume">Resume</button>
                 <button class="nav-btn" onclick="render('projects')" id="btn-projects">Portfolio</button>
                 <button class="nav-btn" onclick="render('contact')" id="btn-contact">Contact</button>
+                <button class="lang-toggle" onclick="toggleLanguage()" id="lang-btn">EN</button>
             </div>
         </nav>
     </div>
@@ -211,484 +248,438 @@
 
     <script>
         // --- DATA STORE ---
+        let currentLang = 'en'; 
+        
         const data = {
-            profile: {
-                name: "Ahmad Ansori",
-                desc: "Spesialis dalam Web Modern, Mobile Apps, dan Integrasi Hardware (IoT). Mengubah kode menjadi solusi nyata.",
-                resumeLink: "https://ahmadansori.com/resume.pdf"
+            profile: { resumeLink: "https://ahmadansori.com/resume.pdf" },
+            skills: [ "Python", "React JS", "Flutter", "US Tax Law", "IoT", "AWS/Azure" ]
+        };
+
+        const db = {
+            id: {
+                nav: { home: "Home", tax: "Pajak AS", cloud: "Cloud Ops", trans: "Penerjemah", resume: "Resume", portfolio: "Portfolio", contact: "Kontak" },
+                profile: {
+                    name: "Ahmad Ansori",
+                    role: "Fullstack Developer & Konsultan Pajak AS",
+                    desc: "Menggabungkan keahlian teknologi dengan presisi finansial. Spesialis Web Modern, IoT, dan Regulasi Pajak Federal AS.",
+                    btn_collab: "Mulai Kolaborasi",
+                    btn_resume: "Unduh Resume"
+                },
+                // SERVICES ON HOME
+                services: {
+                    tech_title: "Fullstack & IoT", tech_sub: "Pengembangan Software End-to-End",
+                    tax_title: "Konsultan Pajak AS", tax_sub: "Lisensi Federal 50 Negara Bagian",
+                    cloud_title: "Manajemen Cloud", cloud_sub: "Optimasi Biaya AWS/Azure/GCP",
+                    trans_title: "Penerjemah Tersumpah", trans_sub: "Notaris US/EU & Penerimaan USCIS"
+                },
+                awards_title: "Penghargaan Utama",
+                opensource: { title: "Open Source", sub: "Kontributor Aktif" },
+                portfolio_link: { title: "Lihat Portfolio", sub: "17+ Proyek Tersedia" },
+                games: { title: "Arena JS", sub: "Dibuat dengan HTML5 Canvas", snake: "Gunakan Tombol Panah", pong: "Gerakkan Mouse Naik/Turun" },
+
+                // TAX PAGE
+                tax_page: {
+                    hero_title: "Solusi Pajak <span class='text-tax'>Amerika.</span>",
+                    hero_desc: "Konsultan Pajak Berlisensi Federal yang diakui IRS. Spesialisasi dalam pengembalian pajak (Tax Refund), kepatuhan pajak ekspatriat, dan resolusi audit untuk 50 negara bagian.",
+                    badges: ["Authorized E-File Provider", "IRS Annual Filing Season Program (AFSP)", "PTIN Certified"],
+                    stats: { refunds: "Total Refund Klien", clients: "Klien Puas", states: "Negara Bagian" },
+                    services_title: "Layanan Pajak Komprehensif",
+                    services_desc: "Kami menangani kasus pajak yang kompleks sekalipun. Cek kredibilitas saya langsung di direktori IRS RPO (Return Preparer Office).",
+                    service_list: [
+                        {title: "Federal & State Filing", sub: "Form 1040, 1040-NR, W-2, 1099, Schedule C."},
+                        {title: "Expats & Foreigners", sub: "Kepatuhan pajak untuk pemilik bisnis non-AS (Form 5472/1120)."},
+                        {title: "ITIN Application", sub: "Certified Acceptance Agent (CAA) Support untuk pembuatan NPWP Amerika."},
+                        {title: "Audit Defense", sub: "Representasi penuh di depan IRS jika terjadi audit."}
+                    ],
+                    trust_title: "Mengapa Memilih Saya?",
+                    trust_desc: "Sebagai seorang Developer, saya menggunakan algoritma presisi untuk menghitung kewajiban pajak Anda hingga ke sen terakhir. Kami menggunakan enkripsi setingkat bank untuk melindungi data SSN/ITIN Anda.<br><br><strong>Akurasi Matematika + Keahlian Hukum.</strong>",
+                    btn_book: "Jadwalkan Konsultasi Pajak"
+                },
+
+                // CLOUD PAGE
+                cloud_page: {
+                    hero_title: "Cloud <span class='text-cloud'>Optimization.</span>",
+                    hero_desc: "Hentikan pemborosan biaya server. Saya mendesain arsitektur cloud yang scalable, aman, dan hemat biaya (FinOps) di AWS, Azure, dan Google Cloud.",
+                    badges: ["Certified Solutions Architect", "FinOps Practitioner", "DevOps Expert"],
+                    stats: { savings: "Rata-rata Penghematan", uptime: "Jaminan Uptime", projects: "Migrasi Sukses" },
+                    services_title: "Layanan Manajemen Infrastruktur",
+                    services_desc: "Memaksimalkan performa aplikasi Anda sambil meminimalkan tagihan bulanan.",
+                    service_list: [
+                        {title: "Cost Optimization (FinOps)", sub: "Audit resource 'zombie' dan rightsizing instance. Hemat hingga 40%."},
+                        {title: "Multi-Cloud Strategy", sub: "Arsitektur Hybrid AWS/Azure untuk redundansi maksimal."},
+                        {title: "Security Hardening", sub: "Kepatuhan SOC2, HIPAA, dan enkripsi data in-transit/at-rest."},
+                        {title: "Auto-Scaling & CI/CD", sub: "Infrastruktur yang tumbuh otomatis sesuai traffic (Terraform/Kubernetes)."}
+                    ],
+                    trust_title: "Performance to Cost Ratio",
+                    trust_desc: "Saya tidak hanya 'menyewakan server'. Saya membangun sistem yang efisien. Klien terakhir saya berhasil memangkas biaya AWS dari $5000/bulan menjadi $2800/bulan tanpa penurunan performa.<br><br><strong>Bayar hanya yang Anda gunakan.</strong>",
+                    btn_book: "Audit Cloud Saya"
+                },
+
+                // TRANSLATOR PAGE
+                trans_page: {
+                    hero_title: "Notarized <span class='text-legal'>Translator.</span>",
+                    hero_desc: "Jasa penerjemah tersumpah dan bernotaris (ID ↔ EN). Diakui secara hukum di Amerika Serikat (USCIS), Eropa, dan institusi global.",
+                    badges: ["USCIS Acceptance Guarantee", "US Notary Partner", "Sworn Translator"],
+                    stats: { docs: "Dokumen Terjemahan", success: "Tingkat Penerimaan", hours: "Turnaround Time" },
+                    services_title: "Layanan Penerjemahan Legal",
+                    services_desc: "Setiap dokumen diterjemahkan dengan presisi hukum, ditandatangani, dicap basah, dan dinotarisasi oleh Notaris Publik terdaftar.",
+                    service_list: [
+                        {title: "Dokumen Imigrasi (USCIS)", sub: "Akte Kelahiran, Kartu Keluarga, Buku Nikah untuk Visa/Green Card."},
+                        {title: "Academic Transcripts", sub: "Ijazah & Transkrip Nilai untuk pendaftaran universitas luar negeri."},
+                        {title: "Kontrak Bisnis & Hukum", sub: "Perjanjian kerjasama, NDA, dan dokumen pengadilan."},
+                        {title: "Apostille Support", sub: "Bantuan legalisasi dokumen untuk penggunaan internasional."}
+                    ],
+                    trust_title: "100% Acceptance Guarantee",
+                    trust_desc: "Kami bekerja sama langsung dengan Notaris di New York dan London. Terjemahan kami dilengkapi dengan *Certificate of Translation Accuracy* yang memenuhi standar Code of Federal Regulations (CFR).<br><br><strong>Ditolak? Uang Kembali 100%.</strong>",
+                    btn_book: "Pesan Terjemahan"
+                },
+
+                resume_title: "Resume", resume_sub: "Riwayat pendidikan, sertifikasi, dan penghargaan.",
+                edu_title: "Pendidikan & Pengalaman", awards_section_title: "Penghargaan & Kehormatan", cert_title: "Sertifikasi Profesional",
+                education: [
+                    { year: "2025 - Sekarang", title: "University of the People", sub: "Pasadena, California (Remote)", desc: "Menempuh S1 Ilmu Komputer. <strong>GPA: 4.0/4.0</strong>. Fokus Algoritma Global." },
+                    { year: "2022 - 2024", title: "Universitas Lampung", sub: "D3 Manajemen Informatika", desc: "Lulusan Terbaik dengan <strong>IPK: 3.8/4.0</strong>." },
+                    { year: "2021", title: "PPTIK ITB", sub: "Internship (Prakerin)", desc: "R&D sistem IoT Smart Farming." },
+                    { year: "2019 - 2022", title: "SMK Negeri 3 Metro", sub: "Rekayasa Perangkat Lunak", desc: "Fokus Robotik dan Pemrograman." }
+                ],
+                certificates: [ { year: "2021", title: "Sertifikat Kompetensi (Sangat Kompeten)", issuer: "PT Telkom Indonesia", desc: "Uji Kompetensi Keahlian RPL." } ],
+                awards: [
+                    { year: "2023", title: "Juara 3 Mahasiswa Berprestasi", sub: "Universitas Lampung" },
+                    { year: "2020", title: "Juara 2 Ide Terbaik KKSI IoT", sub: "Kemendikbud RI" },
+                    { year: "2020", title: "Juara 4 Cloud Computing", sub: "LKS Nasional ke-28" },
+                    { year: "2019", title: "Juara 1 LKS IT Software", sub: "Kota Metro" }
+                ],
+                portfolio_title: "Portfolio", portfolio_sub: "Kombinasi layanan pajak, proyek publik, dan sistem profesional.", nda_notice: "Beberapa proyek dilindungi NDA.",
+                projects: [
+                    // Services
+                    { title: "Konsultasi Pajak AS", category: "Finance Service", desc: "Pengurusan pajak federal & 50 Negara Bagian. Refund $30k+.", tech: "IRS Certified", icon: "fa-file-invoice-dollar", grad: "grad-tax", type: "tax", public: true, link: "#" },
+                    { title: "Cloud FinOps Engine", category: "Cloud Mgmt", desc: "Sistem otomasi penghematan biaya AWS/Azure.", tech: "Terraform, Python", icon: "fa-cloud", grad: "grad-cloud", type: "cloud", public: true, link: "#" },
+                    { title: "Legal Doc Translator", category: "Legal Service", desc: "Penerjemahan dokumen hukum untuk imigrasi US.", tech: "Notarized", icon: "fa-stamp", grad: "grad-legal", type: "legal", public: true, link: "#" },
+                    // Public
+                    { title: "Cashierless Pay", category: "IoT & Web App", desc: "Sistem toko tanpa kasir berbasis IoT (RFID).", tech: "Django, Raspberry Pi", icon: "fa-wifi", grad: "grad-1", type: "tech", public: true, link: "https://github.com/ansoridev/cashierless-pay" },
+                    { title: "Si-Gateway", category: "Mobile Utility", desc: "Layanan SMS Gateway Android background service.", tech: "Android Java, Django", icon: "fa-sms", grad: "grad-3", type: "tech", public: true, link: "https://github.com/ansoridev/Si-Gateway" },
+                    { title: "Traffic Light AI", category: "AI & Vision", desc: "Manajemen lalu lintas cerdas via AI.", tech: "OpenCV, Python", icon: "fa-traffic-light", grad: "grad-2", type: "tech", public: true, link: "#" },
+                    { title: "GunaPedia Cloud", category: "Web Platform", desc: "Platform reseller domain & hosting otomatis.", tech: "React JS, Django", icon: "fa-server", grad: "grad-4", type: "tech", public: true, link: "https://gunapedia.com" },
+                    // NDA
+                    { title: "Govt Data Integration", category: "Big Data", desc: "Integrasi satu data kependudukan.", tech: "Python, Kafka", icon: "fa-database", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Smart Logistics", category: "IoT System", desc: "Pelacakan armada cold chain.", tech: "Flutter, MQTT", icon: "fa-truck-moving", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Fintech Core Banking", category: "Backend", desc: "Modul transaksi koperasi digital.", tech: "Django, Docker", icon: "fa-university", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Telemedik Pro", category: "Mobile App", desc: "Konsultasi dokter video call enkripsi.", tech: "Flutter, WebRTC", icon: "fa-user-md", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Smart Warehouse AI", category: "AI Automation", desc: "Otomatisasi stok gudang via kamera.", tech: "YOLOv8, Python", icon: "fa-boxes", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "E-Voting Blockchain", category: "Web3 App", desc: "Pemungutan suara digital aman.", tech: "Solidity, React", icon: "fa-vote-yea", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "AgriTech Monitoring", category: "IoT Dashboard", desc: "Monitoring irigasi perkebunan sawit.", tech: "Vue.js, LoRaWAN", icon: "fa-seedling", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Retail POS Desktop", category: "Desktop App", desc: "Aplikasi kasir hybrid offline-first.", tech: "Electron, React", icon: "fa-cash-register", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "HRIS Enterprise", category: "SaaS Platform", desc: "Sistem absensi wajah & payroll.", tech: "Laravel, FaceAPI", icon: "fa-users-cog", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Energy Metering", category: "Industrial IoT", desc: "Monitoring efisiensi listrik gedung.", tech: "Python, Modbus", icon: "fa-bolt", grad: "grad-private", type: "tech", public: false, link: "#" }
+                ],
+                contact_title: "Hubungi Saya", contact_sub: "Pilih layanan yang Anda butuhkan dan kirim pesan.",
+                form: { name: "Nama Lengkap", subject: "Subjek (Pajak / Cloud / Terjemahan)", msg: "Pesan Anda...", btn: "Kirim ke ansor@att.net" }
             },
-            skills: [ "Python", "React JS", "Flutter", "IoT / Hardware", "Cloud Architecture" ],
-            
-            education: [
-                { 
-                    year: "2025 - Sekarang", 
-                    title: "University of the People", 
-                    sub: "Pasadena, California (Remote)",
-                    desc: "Pursuing B.Sc. in Computer Science. <strong>GPA: 4.0/4.0</strong>. Focus on Global Algorithms & AI Development."
-                },
-                { 
-                    year: "2022 - 2024", 
-                    title: "Universitas Lampung", 
-                    sub: "D3 Manajemen Informatika",
-                    desc: "Lulusan Terbaik dengan <strong>IPK: 3.8/4.0</strong>. Fokus pada pengembangan sistem informasi berbasis web dan mobile."
-                },
-                { 
-                    year: "2021", 
-                    title: "PPTIK Institut Teknologi Bandung (ITB)", 
-                    sub: "Internship (Prakerin)",
-                    desc: "Research & Development untuk sistem IoT Smart Farming dan integrasi dashboard."
-                },
-                { 
-                    year: "2019 - 2022", 
-                    title: "SMK Negeri 3 Metro", 
-                    sub: "Rekayasa Perangkat Lunak",
-                    desc: "Siswa Aktif jurusan RPL. Fokus pada Robotik dan Pemrograman Dasar."
-                }
-            ],
-            
-            certificates: [
-                { 
-                    year: "2021", 
-                    title: "Sertifikat Kompetensi (Sangat Kompeten)", 
-                    issuer: "PT Telkom Indonesia", 
-                    desc: "Uji Kompetensi Keahlian bidang Rekayasa Perangkat Lunak & Jaringan." 
-                }
-            ],
 
-            awards: [
-                { year: "2023", title: "Juara 3 Mahasiswa Berprestasi", sub: "Universitas Lampung (Program Diploma)" },
-                { year: "2020", title: "Juara 2 Ide Terbaik KKSI IoT", sub: "Direktorat PSMK - Kemendikbud RI" },
-                { year: "2020", title: "Juara 4 (MoE) Cloud Computing", sub: "Puspresnas (LKS Nasional ke-28)" },
-                { year: "2019", title: "Juara 1 LKS IT Software", sub: "Dinas Pendidikan Kota Metro" },
-                { year: "2019", title: "Finalis Robotik Nasional", sub: "Direktorat PSMK - Kemendikbud RI" },
-                { year: "2019", title: "Sertifikasi IoT & Smart Device", sub: "PPTIK ITB & Universitas Bandar Lampung" }
-            ],
+            en: {
+                nav: { home: "Home", tax: "US Tax", cloud: "Cloud Ops", trans: "Translator", resume: "Resume", portfolio: "Portfolio", contact: "Contact" },
+                profile: {
+                    name: "Ahmad Ansori",
+                    role: "Fullstack Dev & US Tax Consultant",
+                    desc: "The unique intersection of Tech Expertise and Financial Precision. Modern Web, IoT, Cloud, and US Federal Tax.",
+                    btn_collab: "Let's Collaborate", btn_resume: "Download Resume"
+                },
+                // SERVICES ON HOME
+                services: {
+                    tech_title: "Fullstack & IoT", tech_sub: "End-to-End Development",
+                    tax_title: "US Tax Consultant", tax_sub: "Licensed in 50 States",
+                    cloud_title: "Cloud Management", cloud_sub: "Cost Opt. AWS/Azure/GCP",
+                    trans_title: "Notarized Translator", trans_sub: "US/EU Notary & USCIS Ready"
+                },
+                awards_title: "Top Awards",
+                opensource: { title: "Open Source", sub: "Active Contributor" },
+                portfolio_link: { title: "View Portfolio", sub: "Explore Projects" },
+                games: { title: "JS Playground", sub: "Built with HTML5 Canvas", snake: "Use Arrow Keys", pong: "Move Mouse Up/Down" },
 
-            projects: [
-                {
-                    title: "Cashierless Pay", category: "IoT & Web App", grad: "grad-1", icon: "fa-wifi",
-                    desc: "Sistem toko tanpa kasir berbasis IoT (RFID & Solenoid) terintegrasi Payment Gateway.",
-                    tech: "Django, Raspberry Pi, RFID", link: "https://github.com/ansoridev/cashierless-pay", public: true
+                // TAX PAGE
+                tax_page: {
+                    hero_title: "US Tax <span class='text-tax'>Solutions.</span>",
+                    hero_desc: "Federally Licensed Tax Consultation and Filing Services. Accurate, Secure, and Maximizing Your Refund. Verified by IRS.",
+                    badges: ["Authorized E-File Provider", "IRS Annual Filing Season Program (AFSP)", "PTIN Certified"],
+                    stats: { refunds: "Total Client Refunds", clients: "Happy Clients", states: "States Covered" },
+                    services_title: "Comprehensive Tax Filing",
+                    services_desc: "Handling all tax forms for individuals, expats, and foreign entities earning US income. Verify my credentials on the IRS RPO directory.",
+                    service_list: [
+                        {title: "Federal & State Filing", sub: "Form 1040, 1040-NR, W-2, 1099, Schedule C."},
+                        {title: "Expats & Foreigners", sub: "Tax compliance for foreign owners (Form 5472/1120)."},
+                        {title: "ITIN Application", sub: "Certified Acceptance Agent (CAA) Support for Tax ID."},
+                        {title: "Audit Defense", sub: "Full representation before the IRS in case of audits."}
+                    ],
+                    trust_title: "Why a Developer?",
+                    trust_desc: "As a Programmer, I am accustomed to complex logic, details, and data security. I apply the same level of precision to your tax figures. We use bank-grade encryption.<br><br><strong>Zero Error Tolerance.</strong>",
+                    btn_book: "Book Tax Consultation"
                 },
-                {
-                    title: "Si-Gateway", category: "Mobile Utility", grad: "grad-3", icon: "fa-sms",
-                    desc: "Layanan SMS Gateway Android background service dengan protokol Websockets real-time.",
-                    tech: "Android Java, Django Channels", link: "https://github.com/ansoridev/Si-Gateway", public: true
+
+                // CLOUD PAGE
+                cloud_page: {
+                    hero_title: "Cloud <span class='text-cloud'>Optimization.</span>",
+                    hero_desc: "Stop paying for idle resources. I design scalable, secure, and cost-effective (FinOps) cloud architectures on AWS, Azure, and Google Cloud.",
+                    badges: ["Certified Solutions Architect", "FinOps Practitioner", "DevOps Expert"],
+                    stats: { savings: "Avg. Cost Savings", uptime: "Uptime Guarantee", projects: "Migrations" },
+                    services_title: "Infrastructure Management",
+                    services_desc: "Maximizing your application performance while minimizing the monthly bill.",
+                    service_list: [
+                        {title: "Cost Optimization (FinOps)", sub: "Auditing 'zombie' resources and rightsizing. Save up to 40%."},
+                        {title: "Multi-Cloud Strategy", sub: "Hybrid AWS/Azure architecture for redundancy."},
+                        {title: "Security Hardening", sub: "SOC2, HIPAA compliance, and encryption at rest/transit."},
+                        {title: "Auto-Scaling & CI/CD", sub: "Infrastructure as Code (Terraform/Kubernetes)."}
+                    ],
+                    trust_title: "Performance to Cost Ratio",
+                    trust_desc: "I don't just 'rent servers'. I build efficient systems. My last client reduced their AWS bill from $5000/mo to $2800/mo with zero performance loss.<br><br><strong>Pay only for what you use.</strong>",
+                    btn_book: "Audit My Cloud"
                 },
-                {
-                    title: "Traffic Light AI", category: "AI & Vision", grad: "grad-2", icon: "fa-traffic-light",
-                    desc: "Manajemen lalu lintas cerdas mendeteksi kepadatan kendaraan real-time dengan Computer Vision.",
-                    tech: "OpenCV, Python, IoT", link: "#", public: true
+
+                // TRANSLATOR PAGE
+                trans_page: {
+                    hero_title: "Notarized <span class='text-legal'>Translator.</span>",
+                    hero_desc: "Sworn and Notarized Translation Services (ID ↔ EN). Legally recognized in the USA (USCIS), Europe, and Global Institutions.",
+                    badges: ["USCIS Acceptance Guarantee", "US Notary Partner", "Sworn Translator"],
+                    stats: { docs: "Documents Translated", success: "Acceptance Rate", hours: "Turnaround Time" },
+                    services_title: "Legal Translation Services",
+                    services_desc: "Every document is translated with legal precision, signed, stamped, and notarized by a registered Public Notary.",
+                    service_list: [
+                        {title: "Immigration Docs (USCIS)", sub: "Birth Certificates, Family Cards for Visa/Green Card."},
+                        {title: "Academic Transcripts", sub: "Diplomas & Transcripts for university applications."},
+                        {title: "Business & Legal Contracts", sub: "Agreements, NDAs, and Court Documents."},
+                        {title: "Apostille Support", sub: "Document legalization assistance for international use."}
+                    ],
+                    trust_title: "100% Acceptance Guarantee",
+                    trust_desc: "We work directly with Notaries in New York and London. Translations come with a *Certificate of Translation Accuracy* complying with Code of Federal Regulations (CFR).<br><br><strong>Rejected? 100% Money Back.</strong>",
+                    btn_book: "Order Translation"
                 },
-                {
-                    title: "GunaPedia Cloud", category: "Web Platform", grad: "grad-4", icon: "fa-server",
-                    desc: "Platform reseller domain & hosting otomatis dengan fitur manajemen billing.",
-                    tech: "React JS, Django REST", link: "https://gunapedia.com", public: true
-                },
-                // NDA Projects
-                { title: "Govt Data Integration", category: "Big Data", grad: "grad-private", icon: "fa-database", desc: "Integrasi satu data kependudukan.", tech: "Python, Kafka", link: "#", public: false },
-                { title: "Smart Logistics", category: "IoT System", grad: "grad-private", icon: "fa-truck-moving", desc: "Pelacakan armada cold chain.", tech: "Flutter, MQTT", link: "#", public: false },
-                { title: "Fintech Core Banking", category: "Backend", grad: "grad-private", icon: "fa-university", desc: "Modul transaksi koperasi digital.", tech: "Django, Docker", link: "#", public: false },
-                { title: "Telemedik Pro", category: "Mobile App", grad: "grad-private", icon: "fa-user-md", desc: "Konsultasi dokter video call enkripsi.", tech: "Flutter, WebRTC", link: "#", public: false },
-                { title: "Smart Warehouse AI", category: "AI Automation", grad: "grad-private", icon: "fa-boxes", desc: "Otomatisasi stok gudang via kamera.", tech: "YOLOv8, Python", link: "#", public: false },
-                { title: "E-Voting Blockchain", category: "Web3 App", grad: "grad-private", icon: "fa-vote-yea", desc: "Pemungutan suara digital aman.", tech: "Solidity, React", link: "#", public: false },
-                { title: "AgriTech Monitoring", category: "IoT Dashboard", grad: "grad-private", icon: "fa-seedling", desc: "Monitoring irigasi perkebunan sawit.", tech: "Vue.js, LoRaWAN", link: "#", public: false },
-                { title: "Retail POS Desktop", category: "Desktop App", grad: "grad-private", icon: "fa-cash-register", desc: "Aplikasi kasir hybrid offline-first.", tech: "Electron, React", link: "#", public: false },
-                { title: "HRIS Enterprise", category: "SaaS Platform", grad: "grad-private", icon: "fa-users-cog", desc: "Sistem absensi wajah & payroll.", tech: "Laravel, FaceAPI", link: "#", public: false },
-                { title: "Energy Metering", category: "Industrial IoT", grad: "grad-private", icon: "fa-bolt", desc: "Monitoring efisiensi listrik gedung.", tech: "Python, Modbus", link: "#", public: false }
-            ]
+
+                resume_title: "Resume", resume_sub: "Education history, certifications, and honors.",
+                edu_title: "Education & Experience", awards_section_title: "Honors & Awards", cert_title: "Professional Certification",
+                education: [
+                    { year: "2025 - Present", title: "University of the People", sub: "Pasadena, CA (Remote)", desc: "B.Sc. in Computer Science. <strong>GPA: 4.0/4.0</strong>." },
+                    { year: "2022 - 2024", title: "Universitas Lampung", sub: "D3 Informatics Management", desc: "Best Graduate with <strong>GPA: 3.8/4.0</strong>." },
+                    { year: "2021", title: "PPTIK ITB", sub: "Internship", desc: "IoT Smart Farming R&D." },
+                    { year: "2019 - 2022", title: "SMK Negeri 3 Metro", sub: "Software Engineering", desc: "Robotics Focus." }
+                ],
+                certificates: [ { year: "2021", title: "Competency Certificate (Very Competent)", issuer: "PT Telkom Indonesia", desc: "Software Engineering & Networking." } ],
+                awards: [
+                    { year: "2023", title: "3rd Place Outstanding Student", sub: "Universitas Lampung" },
+                    { year: "2020", title: "2nd Place Best Idea KKSI IoT", sub: "Ministry of Education" },
+                    { year: "2020", title: "4th Place Cloud Computing", sub: "National LKS 28th" },
+                    { year: "2019", title: "1st Place IT Software LKS", sub: "Metro City" }
+                ],
+                portfolio_title: "Portfolio", portfolio_sub: "Mix of tax, cloud, legal, and tech projects.", nda_notice: "Some projects under NDA.",
+                projects: [
+                    // Services
+                    { title: "US Tax Consultation", category: "Finance Service", desc: "Federal & 50 State tax filing. Refund $30k+.", tech: "IRS Certified", icon: "fa-file-invoice-dollar", grad: "grad-tax", type: "tax", public: true, link: "#" },
+                    { title: "Cloud FinOps Engine", category: "Cloud Mgmt", desc: "Automated AWS/Azure cost saving system.", tech: "Terraform, Python", icon: "fa-cloud", grad: "grad-cloud", type: "cloud", public: true, link: "#" },
+                    { title: "Legal Doc Translator", category: "Legal Service", desc: "Immigration document translation.", tech: "Notarized", icon: "fa-stamp", grad: "grad-legal", type: "legal", public: true, link: "#" },
+                    // Public
+                    { title: "Cashierless Pay", category: "IoT & Web App", desc: "IoT cashierless store (RFID).", tech: "Django, Raspberry Pi", icon: "fa-wifi", grad: "grad-1", type: "tech", public: true, link: "https://github.com/ansoridev/cashierless-pay" },
+                    { title: "Si-Gateway", category: "Mobile Utility", desc: "Android SMS Gateway background service.", tech: "Android Java, Django", icon: "fa-sms", grad: "grad-3", type: "tech", public: true, link: "https://github.com/ansoridev/Si-Gateway" },
+                    { title: "Traffic Light AI", category: "AI & Vision", desc: "Smart traffic management AI.", tech: "OpenCV, Python", icon: "fa-traffic-light", grad: "grad-2", type: "tech", public: true, link: "#" },
+                    { title: "GunaPedia Cloud", category: "Web Platform", desc: "Automated domain & hosting reseller platform.", tech: "React JS, Django", icon: "fa-server", grad: "grad-4", type: "tech", public: true, link: "https://gunapedia.com" },
+                    // NDA
+                    { title: "Govt Data Integration", category: "Big Data", desc: "One-data population integration.", tech: "Python, Kafka", icon: "fa-database", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Smart Logistics", category: "IoT System", desc: "Cold chain fleet tracking.", tech: "Flutter, MQTT", icon: "fa-truck-moving", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Fintech Core Banking", category: "Backend", desc: "Micro-transaction module for digital co-ops.", tech: "Django, Docker", icon: "fa-university", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Telemedik Pro", category: "Mobile App", desc: "Encrypted video call doctor consultation.", tech: "Flutter, WebRTC", icon: "fa-user-md", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Smart Warehouse AI", category: "AI Automation", desc: "Warehouse stock automation via camera.", tech: "YOLOv8, Python", icon: "fa-boxes", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "E-Voting Blockchain", category: "Web3 App", desc: "Pemungutan suara digital aman.", tech: "Solidity, React", icon: "fa-vote-yea", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "AgriTech Monitoring", category: "IoT Dashboard", desc: "Monitoring irigasi perkebunan sawit.", tech: "Vue.js, LoRaWAN", icon: "fa-seedling", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Retail POS Desktop", category: "Desktop App", desc: "Aplikasi kasir hybrid offline-first.", tech: "Electron, React", icon: "fa-cash-register", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "HRIS Enterprise", category: "SaaS Platform", desc: "Sistem absensi wajah & payroll.", tech: "Laravel, FaceAPI", icon: "fa-users-cog", grad: "grad-private", type: "tech", public: false, link: "#" },
+                    { title: "Energy Metering", category: "Industrial IoT", desc: "Monitoring efisiensi listrik gedung.", tech: "Python, Modbus", icon: "fa-bolt", grad: "grad-private", type: "tech", public: false, link: "#" }
+                ],
+                contact_title: "Let's Talk", contact_sub: "Choose a service and message me.",
+                form: { name: "Full Name", subject: "Subject (Tax / Cloud / Trans)", msg: "Your Message...", btn: "Send to ansor@att.net" }
+            }
         };
 
         const app = document.getElementById('app');
-        let gameIntervals = []; // To stop games when switching tabs
+        let gameIntervals = [];
 
-        // --- RENDER HOME ---
+        function setLanguage(lang) {
+            currentLang = lang;
+            const splash = document.getElementById('lang-splash');
+            if(splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 500);
+            }
+            document.getElementById('lang-btn').innerText = lang === 'id' ? 'ID' : 'EN';
+            render('home');
+        }
+
+        function toggleLanguage() {
+            setLanguage(currentLang === 'id' ? 'en' : 'id');
+        }
+
         function renderHome() {
+            const txt = db[currentLang];
             const skillTags = data.skills.map(s => `<span class="skill-pill">${s}</span>`).join('');
-            const recentAwards = data.awards.slice(0, 2).map(a => `
+            const recentAwards = txt.awards.slice(0, 2).map(a => `
                 <div style="display:flex; gap:12px; margin-bottom:16px; align-items:flex-start;">
-                    <div style="background:var(--accent-soft); color:var(--accent-gold); padding:8px; border-radius:8px;">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <div>
-                        <div style="font-weight:700; font-size:0.9rem;">${a.title}</div>
-                        <div style="font-size:0.8rem; color:var(--text-muted);">${a.sub}</div>
-                    </div>
-                </div>
-            `).join('');
+                    <div style="background:var(--accent-soft); color:var(--accent-gold); padding:8px; border-radius:8px;"><i class="fas fa-trophy"></i></div>
+                    <div><div style="font-weight:700; font-size:0.9rem;">${a.title}</div><div style="font-size:0.8rem; color:var(--text-muted);">${a.sub}</div></div>
+                </div>`).join('');
 
             return `
                 <div class="fade-enter bento-grid">
                     <div class="bento-item col-span-8">
-                        <h1 class="hero-title">Hello, I'm <br><span>${data.profile.name}</span>.</h1>
-                        <p style="font-size:1.1rem; color:var(--text-muted); line-height:1.6; max-width:90%; margin-bottom:20px;">${data.profile.desc}</p>
+                        <h1 class="hero-title">Hello, I'm <br><span>${txt.profile.name}</span>.</h1>
+                        <p style="font-size:1.1rem; color:var(--text-muted); line-height:1.6; max-width:90%; margin-bottom:20px;">${txt.profile.desc}</p>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:25px;">
+                            <div class="service-card" onclick="render('tax')" style="cursor:pointer; border:1px solid var(--tax-green);"><div class="service-icon" style="background:var(--tax-soft); color:var(--tax-green);"><i class="fas fa-file-invoice-dollar"></i></div><div><h4 style="margin:0; font-size:0.9rem; color:var(--tax-green);">${txt.services.tax_title}</h4><span style="font-size:0.7rem; color:var(--text-muted);">${txt.services.tax_sub} &rarr;</span></div></div>
+                            <div class="service-card" onclick="render('cloud')" style="cursor:pointer; border:1px solid var(--cloud-blue);"><div class="service-icon" style="background:var(--cloud-soft); color:var(--cloud-blue);"><i class="fas fa-cloud"></i></div><div><h4 style="margin:0; font-size:0.9rem; color:var(--cloud-blue);">${txt.services.cloud_title}</h4><span style="font-size:0.7rem; color:var(--text-muted);">${txt.services.cloud_sub} &rarr;</span></div></div>
+                            <div class="service-card" onclick="render('trans')" style="cursor:pointer; border:1px solid var(--legal-maroon);"><div class="service-icon" style="background:var(--legal-soft); color:var(--legal-maroon);"><i class="fas fa-stamp"></i></div><div><h4 style="margin:0; font-size:0.9rem; color:var(--legal-maroon);">${txt.services.trans_title}</h4><span style="font-size:0.7rem; color:var(--text-muted);">${txt.services.trans_sub} &rarr;</span></div></div>
+                        </div>
                         <div style="margin-bottom:30px;">${skillTags}</div>
-                        <div>
-                            <button class="btn-primary" onclick="render('contact')">Mulai Kolaborasi</button>
-                            <a href="${data.profile.resumeLink}" target="_blank" style="margin-left:15px; text-decoration:none; color:var(--text-main); font-weight:600;">Resume PDF &rarr;</a>
-                        </div>
+                        <div><button class="btn-primary" onclick="render('contact')">${txt.profile.btn_collab}</button><a href="${data.profile.resumeLink}" target="_blank" style="margin-left:15px; text-decoration:none; color:var(--text-main); font-weight:600;">${txt.profile.btn_resume} &rarr;</a></div>
                     </div>
-                    <div class="bento-item col-span-4" style="padding:0;">
-                        <img src="https://ahmadansori.com/assets/img/IMG_9486__2_-removebg-preview.png" style="width:100%; height:100%; object-fit:cover;" alt="Profile">
-                    </div>
-                    <div class="bento-item col-span-4" style="background:var(--bg-surface);">
-                        <h3>🏆 Top Awards</h3>
-                        <div style="margin-top:20px;">${recentAwards}</div>
-                        <div style="margin-top:auto; text-align:right;">
-                            <a href="#" onclick="render('resume')" style="font-size:0.85rem; color:var(--text-main); font-weight:700; text-decoration:none;">View All &rarr;</a>
-                        </div>
-                    </div>
-                    <div class="bento-item col-span-4" style="background:#1C1917; color:white; text-align:center; justify-content:center;">
-                        <i class="fab fa-github" style="font-size:3rem; margin-bottom:15px;"></i>
-                        <h2>Open Source</h2>
-                        <a href="https://github.com/ansoridev" target="_blank" style="color:var(--accent-gold); text-decoration:none;">@ansoridev</a>
-                    </div>
-                    <div class="bento-item col-span-4" onclick="render('projects')" style="cursor:pointer; border: 2px dashed var(--accent-gold); justify-content:center; text-align:center;">
-                        <i class="fas fa-layer-group" style="font-size:2rem; color:var(--accent-gold); margin-bottom:10px;"></i>
-                        <h3>Lihat Portfolio</h3>
-                    </div>
-
-                    <div class="bento-item col-span-12" style="background: var(--bg-surface);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                            <h3 style="margin:0;"><i class="fas fa-gamepad" style="color:var(--accent-gold); margin-right:10px;"></i> JS Playground</h3>
-                            <span style="font-size:0.8rem; color:var(--text-muted);">Built with HTML5 Canvas</span>
-                        </div>
-                        
-                        <div class="game-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                            <div>
-                                <canvas id="snakeGame" class="game-canvas"></canvas>
-                                <p style="text-align:center; font-size:0.8rem; margin-top:10px; color:var(--text-muted);">
-                                    <i class="fas fa-keyboard"></i> Use Arrow Keys
-                                </p>
-                            </div>
-                            <div>
-                                <canvas id="pongGame" class="game-canvas"></canvas>
-                                <p style="text-align:center; font-size:0.8rem; margin-top:10px; color:var(--text-muted);">
-                                    <i class="fas fa-mouse-pointer"></i> Move Mouse Up/Down
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+                    <div class="bento-item col-span-4" style="padding:0;"><img src="assets/img/man-2.png" style="width:100%; height:100%; object-fit:cover;" alt="Profile"></div>
+                    <div class="bento-item col-span-4" style="background:var(--bg-surface);"><h3>🏆 ${txt.awards_title}</h3><div style="margin-top:20px;">${recentAwards}</div></div>
+                    <div class="bento-item col-span-4" style="background:#1C1917; color:white; text-align:center; justify-content:center;"><i class="fab fa-github" style="font-size:3rem; margin-bottom:15px;"></i><h2>${txt.opensource.title}</h2><p style="color:#A8A29E;">${txt.opensource.sub}</p><a href="https://github.com/ansoridev" target="_blank" style="color:var(--accent-gold); text-decoration:none;">@ansoridev</a></div>
+                    <div class="bento-item col-span-4" onclick="render('projects')" style="cursor:pointer; border: 2px dashed var(--accent-gold); justify-content:center; text-align:center;"><i class="fas fa-layer-group" style="font-size:2rem; color:var(--accent-gold); margin-bottom:10px;"></i><h3>${txt.portfolio_link.title}</h3><p style="color:var(--text-muted);">${txt.portfolio_link.sub}</p></div>
+                    <div class="bento-item col-span-12" style="background: var(--bg-surface);"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h3 style="margin:0;"><i class="fas fa-gamepad" style="color:var(--accent-gold); margin-right:10px;"></i> ${txt.games.title}</h3><span style="font-size:0.8rem; color:var(--text-muted);">${txt.games.sub}</span></div><div class="game-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;"><div><canvas id="snakeGame" class="game-canvas"></canvas><p style="text-align:center; font-size:0.8rem; margin-top:10px; color:var(--text-muted);"><i class="fas fa-keyboard"></i> ${txt.games.snake}</p></div><div><canvas id="pongGame" class="game-canvas"></canvas><p style="text-align:center; font-size:0.8rem; margin-top:10px; color:var(--text-muted);"><i class="fas fa-mouse-pointer"></i> ${txt.games.pong}</p></div></div></div>
+                </div>`;
         }
 
-        // --- GAME LOGIC ---
-        function initGames() {
-            // SNAKE GAME
-            const cvs = document.getElementById('snakeGame');
-            if(!cvs) return;
-            const ctx = cvs.getContext('2d');
-            
-            // Resize canvas resolution
-            const rect = cvs.getBoundingClientRect();
-            cvs.width = rect.width;
-            cvs.height = rect.height;
-
-            const box = 20;
-            let snake = [{x: 10 * box, y: 10 * box}];
-            let food = {x: Math.floor(Math.random()*(cvs.width/box))*box, y: Math.floor(Math.random()*(cvs.height/box))*box};
-            let d = "RIGHT";
-            let score = 0;
-
-            document.addEventListener("keydown", direction);
-            function direction(event) {
-                if(event.keyCode == 37 && d != "RIGHT") d = "LEFT";
-                else if(event.keyCode == 38 && d != "DOWN") d = "UP";
-                else if(event.keyCode == 39 && d != "LEFT") d = "RIGHT";
-                else if(event.keyCode == 40 && d != "UP") d = "DOWN";
-            }
-
-            function drawSnake() {
-                ctx.fillStyle = "#1C1917";
-                ctx.fillRect(0, 0, cvs.width, cvs.height);
-
-                for(let i = 0; i < snake.length; i++) {
-                    ctx.fillStyle = (i == 0) ? "#D97706" : "#FEF3C7";
-                    ctx.fillRect(snake[i].x, snake[i].y, box, box);
-                }
-
-                ctx.fillStyle = "red";
-                ctx.fillRect(food.x, food.y, box, box);
-
-                let snakeX = snake[0].x;
-                let snakeY = snake[0].y;
-
-                if(d == "LEFT") snakeX -= box;
-                if(d == "UP") snakeY -= box;
-                if(d == "RIGHT") snakeX += box;
-                if(d == "DOWN") snakeY += box;
-
-                if(snakeX == food.x && snakeY == food.y) {
-                    score++;
-                    food = {x: Math.floor(Math.random()*(cvs.width/box))*box, y: Math.floor(Math.random()*(cvs.height/box))*box};
-                } else {
-                    snake.pop();
-                }
-
-                if(snakeX < 0 || snakeX >= cvs.width || snakeY < 0 || snakeY >= cvs.height) {
-                    snake = [{x: 10 * box, y: 10 * box}];
-                    score = 0;
-                }
-
-                let newHead = {x: snakeX, y: snakeY};
-                snake.unshift(newHead);
-
-                ctx.fillStyle = "white";
-                ctx.font = "20px Arial";
-                ctx.fillText("Score: " + score, 10, 25);
-            }
-            
-            let snakeInterval = setInterval(drawSnake, 100);
-            gameIntervals.push(snakeInterval);
-
-            // PONG GAME
-            const pCvs = document.getElementById('pongGame');
-            const pCtx = pCvs.getContext('2d');
-            
-            pCvs.width = pCvs.getBoundingClientRect().width;
-            pCvs.height = pCvs.getBoundingClientRect().height;
-
-            const user = { x: 0, y: pCvs.height/2 - 50, w: 10, h: 100, color: "#D97706", score: 0 };
-            const com = { x: pCvs.width - 10, y: pCvs.height/2 - 50, w: 10, h: 100, color: "white", score: 0 };
-            const ball = { x: pCvs.width/2, y: pCvs.height/2, r: 10, speed: 5, velocityX: 5, velocityY: 5, color: "white" };
-
-            pCvs.addEventListener("mousemove", getMousePos);
-            function getMousePos(evt) {
-                let rect = pCvs.getBoundingClientRect();
-                user.y = evt.clientY - rect.top - user.h/2;
-            }
-
-            function drawRect(x, y, w, h, color) {
-                pCtx.fillStyle = color;
-                pCtx.fillRect(x, y, w, h);
-            }
-            function drawCircle(x, y, r, color) {
-                pCtx.fillStyle = color;
-                pCtx.beginPath();
-                pCtx.arc(x, y, r, 0, Math.PI*2, false);
-                pCtx.closePath();
-                pCtx.fill();
-            }
-            function drawText(text, x, y) {
-                pCtx.fillStyle = "#FFF";
-                pCtx.font = "20px Arial";
-                pCtx.fillText(text, x, y);
-            }
-            function resetBall(){
-                ball.x = pCvs.width/2;
-                ball.y = pCvs.height/2;
-                ball.speed = 5;
-                ball.velocityX = -ball.velocityX;
-            }
-
-            function updatePong() {
-                ball.x += ball.velocityX;
-                ball.y += ball.velocityY;
-
-                // AI Logic (Simple)
-                let computerLevel = 0.1;
-                com.y += (ball.y - (com.y + com.h/2)) * computerLevel;
-
-                if(ball.y + ball.r > pCvs.height || ball.y - ball.r < 0) ball.velocityY = -ball.velocityY;
-
-                let player = (ball.x < pCvs.width/2) ? user : com;
-                if(collision(ball, player)) {
-                    let collidePoint = (ball.y - (player.y + player.h/2));
-                    collidePoint = collidePoint / (player.h/2);
-                    let angleRad = (Math.PI/4) * collidePoint;
-                    let direction = (ball.x < pCvs.width/2) ? 1 : -1;
-                    ball.velocityX = direction * ball.speed * Math.cos(angleRad);
-                    ball.velocityY = ball.speed * Math.sin(angleRad);
-                    ball.speed += 0.5;
-                }
-
-                if(ball.x - ball.r < 0) { com.score++; resetBall(); }
-                else if(ball.x + ball.r > pCvs.width) { user.score++; resetBall(); }
-            }
-
-            function collision(b, p) {
-                p.top = p.y;
-                p.bottom = p.y + p.h;
-                p.left = p.x;
-                p.right = p.x + p.w;
-
-                b.top = b.y - b.r;
-                b.bottom = b.y + b.r;
-                b.left = b.x - b.r;
-                b.right = b.x + b.r;
-
-                return b.right > p.left && b.bottom > p.top && b.left < p.right && b.top < p.bottom;
-            }
-
-            function renderPong() {
-                drawRect(0, 0, pCvs.width, pCvs.height, "#1C1917");
-                drawText(user.score, pCvs.width/4, pCvs.height/5);
-                drawText(com.score, 3*pCvs.width/4, pCvs.height/5);
-                drawRect(user.x, user.y, user.w, user.h, user.color);
-                drawRect(com.x, com.y, com.w, com.h, com.color);
-                drawCircle(ball.x, ball.y, ball.r, ball.color);
-            }
-
-            function gameLoop() {
-                updatePong();
-                renderPong();
-            }
-            
-            let pongInterval = setInterval(gameLoop, 1000/60);
-            gameIntervals.push(pongInterval);
-        }
-
-        function stopGames() {
-            gameIntervals.forEach(clearInterval);
-            gameIntervals = [];
-        }
-
-
-        // --- RENDER RESUME ---
-        function renderResume() {
-            const eduHtml = data.education.map(e => `
-                <div class="timeline-item">
-                    <span class="time-year">${e.year}</span>
-                    <h3 style="font-size:1.1rem; margin:6px 0;">${e.title}</h3>
-                    <div style="font-weight:600; color:var(--accent-gold); font-size:0.9rem;">${e.sub}</div>
-                    <p style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">${e.desc}</p>
-                </div>
-            `).join('');
-
-            const certHtml = data.certificates.map(c => `
-                <div class="cert-highlight">
-                    <div style="font-size:2rem; color:var(--accent-gold);">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div>
-                        <div style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--text-muted);">Professional Certification</div>
-                        <h3 style="font-size:1.1rem; margin-bottom:2px;">${c.title}</h3>
-                        <div style="font-weight:600; font-size:0.9rem; color:var(--text-main);">${c.issuer}</div>
-                        <p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">${c.desc}</p>
-                    </div>
-                </div>
-            `).join('');
-
-            const awardHtml = data.awards.map(a => `
-                <div class="award-item">
-                    <div class="award-icon"><i class="fas fa-medal"></i></div>
-                    <div>
-                        <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">${a.year}</div>
-                        <h3 style="font-size:1.1rem; margin-bottom:4px;">${a.title}</h3>
-                        <p style="color:var(--text-muted); font-size:0.9rem;">${a.sub}</p>
-                    </div>
-                </div>
-            `).join('');
-
+        function renderTax() {
+            const t = db[currentLang].tax_page;
+            const badges = t.badges.map(b => `<span class="skill-pill bg-tax-soft text-tax"><i class="fas fa-check-circle"></i> ${b}</span>`).join('');
+            const services = t.service_list.map(s => `<div class="service-card" style="margin:0;"><div class="service-icon" style="background:var(--tax-soft); color:var(--tax-green);"><i class="fas fa-file-contract"></i></div><div><strong>${s.title}</strong><br><span style="font-size:0.85rem; color:var(--text-muted);">${s.sub}</span></div></div>`).join('');
             return `
                 <div class="fade-enter">
-                    <div style="text-align:center; margin-bottom:40px;">
-                        <h1 style="font-size:3rem;">Resume</h1>
-                        <p style="color:var(--text-muted);">Riwayat pendidikan, sertifikasi, dan penghargaan.</p>
-                    </div>
+                    <div style="text-align:center; margin-bottom:50px;"><h1 class="hero-title" style="font-size:3rem;">${t.hero_title}</h1><p style="font-size:1.2rem; color:var(--text-muted); max-width:700px; margin:0 auto;">${t.hero_desc}</p><div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">${badges}</div></div>
                     <div class="bento-grid">
-                        <div class="bento-item col-span-6">
-                            <h2 style="margin-bottom:30px;"><i class="fas fa-graduation-cap" style="color:var(--accent-gold);"></i> Education & Exp</h2>
-                            <div class="timeline-list">${eduHtml}</div>
-                        </div>
-                         <div class="bento-item col-span-6">
-                            <h2 style="margin-bottom:30px;"><i class="fas fa-trophy" style="color:var(--accent-gold);"></i> Honors & Awards</h2>
-                            ${certHtml}
-                            <div>${awardHtml}</div>
-                        </div>
+                        <div class="bento-item col-span-4 bento-tax stat-card"><div class="stat-num text-tax">$30k+</div><div class="stat-label">${t.stats.refunds}</div></div>
+                        <div class="bento-item col-span-4 bento-tax stat-card"><div class="stat-num text-tax">15+</div><div class="stat-label">${t.stats.clients}</div></div>
+                        <div class="bento-item col-span-4 bento-tax stat-card"><div class="stat-num text-tax">50</div><div class="stat-label">${t.stats.states}</div></div>
+                        <div class="bento-item col-span-8 bento-tax"><h2 style="margin-bottom:20px; color:var(--text-main);">${t.services_title}</h2><p style="color:var(--text-muted); margin-bottom:20px;">${t.services_desc}</p><div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">${services}</div></div>
+                        <div class="bento-item col-span-4" style="background:var(--tax-green); color:white;"><i class="fas fa-user-shield" style="font-size:3rem; margin-bottom:20px; color:var(--tax-soft);"></i><h2 style="color:white; margin-bottom:10px;">${t.trust_title}</h2><p style="font-size:1rem; line-height:1.6; color:#ECFDF5;">${t.trust_desc}</p><button class="btn-primary" onclick="render('contact')" style="background:white; color:var(--tax-green); margin-top:20px; width:100%;">${t.btn_book}</button></div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
 
-        // --- RENDER PROJECTS ---
-        function renderProjects() {
-            const projectsHtml = data.projects.map(p => {
-                const privateTag = p.public ? '' : '<span class="private-badge">NDA / PRIVATE</span>';
-                const linkAction = p.public ? `onclick="window.open('${p.link}', '_blank')"` : '';
-                const cursorStyle = p.public ? 'cursor:pointer' : 'cursor:default; opacity:0.9';
-
-                return `
-                <div class="project-card fade-enter" style="${cursorStyle}" ${linkAction}>
-                    <div class="project-art ${p.grad}"><i class="fas ${p.icon}"></i></div>
-                    <div class="project-info">
-                        <div style="margin-bottom:5px;">
-                            <span style="font-size:0.75rem; font-weight:700; color:var(--accent-gold); letter-spacing:1px; text-transform:uppercase;">${p.category}</span>
-                            ${privateTag}
-                        </div>
-                        <h3 style="font-size:1.4rem;">${p.title}</h3>
-                        <p style="color:var(--text-muted); font-size:0.95rem; margin-top:10px; line-height:1.6;">${p.desc}</p>
-                        <div class="tech-stack"><i class="fas fa-code me-2"></i> ${p.tech}</div>
-                    </div>
-                </div>
-                `;
-            }).join('');
-
+        function renderCloud() {
+            const t = db[currentLang].cloud_page;
+            const badges = t.badges.map(b => `<span class="skill-pill bg-cloud-soft text-cloud"><i class="fas fa-check-circle"></i> ${b}</span>`).join('');
+            const services = t.service_list.map(s => `<div class="service-card" style="margin:0;"><div class="service-icon" style="background:var(--cloud-soft); color:var(--cloud-blue);"><i class="fas fa-server"></i></div><div><strong>${s.title}</strong><br><span style="font-size:0.85rem; color:var(--text-muted);">${s.sub}</span></div></div>`).join('');
             return `
                 <div class="fade-enter">
-                    <div style="text-align:center; margin-bottom:50px;">
-                        <h1 style="font-size:3rem;">Portfolio</h1>
-                        <p style="color:var(--text-muted);">Kombinasi proyek publik dan pekerjaan profesional.</p>
+                    <div style="text-align:center; margin-bottom:50px;"><h1 class="hero-title" style="font-size:3rem;">${t.hero_title}</h1><p style="font-size:1.2rem; color:var(--text-muted); max-width:700px; margin:0 auto;">${t.hero_desc}</p><div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">${badges}</div></div>
+                    <div class="bento-grid">
+                        <div class="bento-item col-span-4 bento-cloud stat-card"><div class="stat-num text-cloud">40%</div><div class="stat-label">${t.stats.savings}</div></div>
+                        <div class="bento-item col-span-4 bento-cloud stat-card"><div class="stat-num text-cloud">99.9%</div><div class="stat-label">${t.stats.uptime}</div></div>
+                        <div class="bento-item col-span-4 bento-cloud stat-card"><div class="stat-num text-cloud">50+</div><div class="stat-label">${t.stats.projects}</div></div>
+                        <div class="bento-item col-span-8 bento-cloud"><h2 style="margin-bottom:20px; color:var(--text-main);">${t.services_title}</h2><p style="color:var(--text-muted); margin-bottom:20px;">${t.services_desc}</p><div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">${services}</div></div>
+                        <div class="bento-item col-span-4" style="background:var(--cloud-blue); color:white;"><i class="fas fa-chart-line" style="font-size:3rem; margin-bottom:20px; color:var(--cloud-soft);"></i><h2 style="color:white; margin-bottom:10px;">${t.trust_title}</h2><p style="font-size:1rem; line-height:1.6; color:#DBEAFE;">${t.trust_desc}</p><button class="btn-primary" onclick="render('contact')" style="background:white; color:var(--cloud-blue); margin-top:20px; width:100%;">${t.btn_book}</button></div>
                     </div>
-                    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:24px;">
-                        ${projectsHtml}
-                    </div>
-                    <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:0.9rem;">
-                        <i class="fas fa-lock" style="margin-right:5px;"></i> Beberapa proyek dilindungi oleh Non-Disclosure Agreement (NDA).
-                    </div>
-                </div>
-            `;
+                </div>`;
         }
 
-        // --- RENDER CONTACT ---
-        function renderContact() {
+        function renderTrans() {
+            const t = db[currentLang].trans_page;
+            const badges = t.badges.map(b => `<span class="skill-pill bg-legal-soft text-legal"><i class="fas fa-check-circle"></i> ${b}</span>`).join('');
+            const services = t.service_list.map(s => `<div class="service-card" style="margin:0;"><div class="service-icon" style="background:var(--legal-soft); color:var(--legal-maroon);"><i class="fas fa-file-signature"></i></div><div><strong>${s.title}</strong><br><span style="font-size:0.85rem; color:var(--text-muted);">${s.sub}</span></div></div>`).join('');
             return `
-                <div class="fade-enter" style="max-width:600px; margin:0 auto;">
-                    <div class="bento-item" style="text-align:center;">
-                        <h1 style="margin-bottom:10px;">Let's Talk</h1>
-                        <p style="color:var(--text-muted); margin-bottom:30px;">Kirim pesan langsung ke email saya.</p>
-                        <form onsubmit="sendToEmail(event)">
-                            <input type="text" id="contact-name" class="input-field" placeholder="Nama Lengkap" required>
-                            <input type="text" id="contact-subject" class="input-field" placeholder="Subjek Project" required>
-                            <textarea id="contact-message" class="input-field" rows="5" placeholder="Pesan Anda..." required></textarea>
-                            <button type="submit" class="btn-primary" style="width:100%; display:flex; align-items:center; justify-content:center; gap:10px;">
-                                <i class="fas fa-paper-plane"></i> Kirim ke ansor@att.net
-                            </button>
-                        </form>
+                <div class="fade-enter">
+                    <div style="text-align:center; margin-bottom:50px;"><h1 class="hero-title" style="font-size:3rem;">${t.hero_title}</h1><p style="font-size:1.2rem; color:var(--text-muted); max-width:700px; margin:0 auto;">${t.hero_desc}</p><div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">${badges}</div></div>
+                    <div class="bento-grid">
+                        <div class="bento-item col-span-4 bento-legal stat-card"><div class="stat-num text-legal">500+</div><div class="stat-label">${t.stats.docs}</div></div>
+                        <div class="bento-item col-span-4 bento-legal stat-card"><div class="stat-num text-legal">100%</div><div class="stat-label">${t.stats.success}</div></div>
+                        <div class="bento-item col-span-4 bento-legal stat-card"><div class="stat-num text-legal">24h</div><div class="stat-label">${t.stats.hours}</div></div>
+                        <div class="bento-item col-span-8 bento-legal"><h2 style="margin-bottom:20px; color:var(--text-main);">${t.services_title}</h2><p style="color:var(--text-muted); margin-bottom:20px;">${t.services_desc}</p><div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">${services}</div></div>
+                        <div class="bento-item col-span-4" style="background:var(--legal-maroon); color:white;"><i class="fas fa-gavel" style="font-size:3rem; margin-bottom:20px; color:var(--legal-soft);"></i><h2 style="color:white; margin-bottom:10px;">${t.trust_title}</h2><p style="font-size:1rem; line-height:1.6; color:#FFE4E6;">${t.trust_desc}</p><button class="btn-primary" onclick="render('contact')" style="background:white; color:var(--legal-maroon); margin-top:20px; width:100%;">${t.btn_book}</button></div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
 
-        // --- UTILS ---
+        function renderResume() {
+            const txt = db[currentLang];
+            const eduHtml = txt.education.map(e => `<div class="timeline-item"><span class="time-year">${e.year}</span><h3 style="font-size:1.1rem; margin:6px 0;">${e.title}</h3><div style="font-weight:600; color:var(--accent-gold); font-size:0.9rem;">${e.sub}</div><p style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">${e.desc}</p></div>`).join('');
+            const certHtml = txt.certificates.map(c => `<div class="cert-highlight"><div style="font-size:2rem; color:var(--accent-gold);"><i class="fas fa-certificate"></i></div><div><div style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--text-muted);">${txt.cert_title}</div><h3 style="font-size:1.1rem; margin-bottom:2px;">${c.title}</h3><div style="font-weight:600; font-size:0.9rem; color:var(--text-main);">${c.issuer}</div><p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">${c.desc}</p></div></div>`).join('');
+            const awardHtml = txt.awards.map(a => `<div class="award-item"><div class="award-icon"><i class="fas fa-medal"></i></div><div><div style="font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">${a.year}</div><h3 style="font-size:1.1rem; margin-bottom:4px;">${a.title}</h3><p style="color:var(--text-muted); font-size:0.9rem;">${a.sub}</p></div></div>`).join('');
+            return `<div class="fade-enter"><div style="text-align:center; margin-bottom:40px;"><h1 style="font-size:3rem;">${txt.resume_title}</h1><p style="color:var(--text-muted);">${txt.resume_sub}</p></div><div class="bento-grid"><div class="bento-item col-span-6"><h2 style="margin-bottom:30px;"><i class="fas fa-graduation-cap" style="color:var(--accent-gold);"></i> ${txt.edu_title}</h2><div class="timeline-list">${eduHtml}</div></div><div class="bento-item col-span-6"><h2 style="margin-bottom:30px;"><i class="fas fa-trophy" style="color:var(--accent-gold);"></i> ${txt.awards_section_title}</h2>${certHtml}<div>${awardHtml}</div></div></div></div>`;
+        }
+
+        function renderProjects() {
+            const txt = db[currentLang];
+            const html = txt.projects.map(p => {
+                const isPublic = p.public;
+                const privateTag = isPublic ? '' : '<span class="private-badge">NDA / PRIVATE</span>';
+                let specialTag = '';
+                if(p.type === 'tax') specialTag = '<span class="tax-badge" style="background:var(--tax-soft); color:var(--tax-green);">TAX</span>';
+                if(p.type === 'cloud') specialTag = '<span class="cloud-badge" style="background:var(--cloud-soft); color:var(--cloud-blue);">CLOUD</span>';
+                if(p.type === 'legal') specialTag = '<span class="legal-badge" style="background:var(--legal-soft); color:var(--legal-maroon);">LEGAL</span>';
+                
+                const linkAction = isPublic ? `onclick="window.open('${p.link}', '_blank')"` : '';
+                const cursorStyle = isPublic ? 'cursor:pointer' : 'cursor:default; opacity:0.9';
+                
+                return `<div class="project-card fade-enter" style="${cursorStyle}" ${linkAction}><div class="project-art ${p.grad}"><i class="fas ${p.icon}"></i></div><div class="project-info"><div style="margin-bottom:5px;"><span style="font-size:0.75rem; font-weight:700; color:var(--accent-gold); letter-spacing:1px; text-transform:uppercase;">${p.category}</span> ${privateTag} ${specialTag}</div><h3 style="font-size:1.4rem;">${p.title}</h3><p style="color:var(--text-muted); font-size:0.95rem; margin-top:10px; line-height:1.6;">${p.desc}</p><div class="tech-stack"><i class="fas fa-code me-2"></i> ${p.tech}</div></div></div>`;
+            }).join('');
+            return `<div class="fade-enter"><div style="text-align:center; margin-bottom:50px;"><h1 style="font-size:3rem;">${txt.portfolio_title}</h1><p style="color:var(--text-muted);">${txt.portfolio_sub}</p></div><div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:24px;">${html}</div><div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:0.9rem;"><i class="fas fa-lock" style="margin-right:5px;"></i> ${txt.nda_notice}</div></div>`;
+        }
+
+        function renderContact() {
+            const txt = db[currentLang];
+            return `<div class="fade-enter" style="max-width:600px; margin:0 auto;"><div class="bento-item" style="text-align:center;"><h1 style="margin-bottom:10px;">${txt.contact_title}</h1><p style="color:var(--text-muted); margin-bottom:30px;">${txt.contact_sub}</p><form onsubmit="sendToEmail(event)"><input type="text" id="contact-name" class="input-field" placeholder="${txt.form.name}" required><input type="text" id="contact-subject" class="input-field" placeholder="${txt.form.subject}" required><textarea id="contact-message" class="input-field" rows="5" placeholder="${txt.form.msg}" required></textarea><button type="submit" class="btn-primary" style="width:100%; display:flex; align-items:center; justify-content:center; gap:10px;"><i class="fas fa-paper-plane"></i> ${txt.form.btn}</button></form></div></div>`;
+        }
+
         function sendToEmail(e) {
             e.preventDefault();
             const name = document.getElementById('contact-name').value;
             const subject = document.getElementById('contact-subject').value;
             const message = document.getElementById('contact-message').value;
-            const emailBody = `Halo Ansori,%0D%0A%0D%0ASaya ${name}, ingin berdiskusi:%0D%0A%0D%0A${message}`;
-            window.location.href = `mailto:ansor@att.net?subject=${encodeURIComponent(subject)}&body=${emailBody}`;
+            const body = `Halo Ansori,%0D%0A%0D%0ASaya ${name}, ingin berdiskusi:%0D%0A%0D%0A${message}`;
+            window.location.href = `mailto:ansor@att.net?subject=${encodeURIComponent(subject)}&body=${body}`;
         }
 
-        function render(page) {
-            stopGames(); // Clean up games if any
+        function initGames() {
+            const cvs = document.getElementById('snakeGame'); if(!cvs) return;
+            const ctx = cvs.getContext('2d');
+            const rect = cvs.getBoundingClientRect(); cvs.width = rect.width; cvs.height = rect.height;
+            const box = 20; let snake = [{x: 10 * box, y: 10 * box}]; let food = {x: Math.floor(Math.random()*(cvs.width/box))*box, y: Math.floor(Math.random()*(cvs.height/box))*box}; let d = "RIGHT"; let score = 0;
+            document.addEventListener("keydown", (e) => { if(e.keyCode==37 && d!="RIGHT") d="LEFT"; else if(e.keyCode==38 && d!="DOWN") d="UP"; else if(e.keyCode==39 && d!="LEFT") d="RIGHT"; else if(e.keyCode==40 && d!="UP") d="DOWN"; });
+            function drawSnake() { ctx.fillStyle = "#1C1917"; ctx.fillRect(0, 0, cvs.width, cvs.height); for(let i=0; i<snake.length; i++) { ctx.fillStyle = (i==0)?"#D97706":"#FEF3C7"; ctx.fillRect(snake[i].x, snake[i].y, box, box); } ctx.fillStyle = "red"; ctx.fillRect(food.x, food.y, box, box); let snakeX = snake[0].x; let snakeY = snake[0].y; if(d=="LEFT") snakeX-=box; if(d=="UP") snakeY-=box; if(d=="RIGHT") snakeX+=box; if(d=="DOWN") snakeY+=box; if(snakeX<0 || snakeX>=cvs.width || snakeY<0 || snakeY>=cvs.height) { snake = [{x: 10 * box, y: 10 * box}]; score = 0; } if(Math.abs(snakeX-food.x)<box && Math.abs(snakeY-food.y)<box) { score++; food = {x: Math.floor(Math.random()*(cvs.width/box))*box, y: Math.floor(Math.random()*(cvs.height/box))*box}; } else { snake.pop(); } let newHead = {x: snakeX, y: snakeY}; snake.unshift(newHead); ctx.fillStyle = "white"; ctx.font = "20px Arial"; ctx.fillText("Score: " + score, 10, 25); }
+            gameIntervals.push(setInterval(drawSnake, 100));
 
+            const pCvs = document.getElementById('pongGame'); const pCtx = pCvs.getContext('2d');
+            pCvs.width = pCvs.getBoundingClientRect().width; pCvs.height = pCvs.getBoundingClientRect().height;
+            const user = {x: 0, y: pCvs.height/2 - 50, w: 10, h: 100, color: "#D97706", score: 0}; const com = {x: pCvs.width - 10, y: pCvs.height/2 - 50, w: 10, h: 100, color: "white", score: 0}; const ball = {x: pCvs.width/2, y: pCvs.height/2, r: 10, speed: 5, velocityX: 5, velocityY: 5, color: "white"};
+            pCvs.addEventListener("mousemove", (evt) => { let r = pCvs.getBoundingClientRect(); user.y = evt.clientY - r.top - user.h/2; });
+            function updatePong() { ball.x += ball.velocityX; ball.y += ball.velocityY; com.y += (ball.y - (com.y + com.h/2)) * 0.1; if(ball.y+ball.r > pCvs.height || ball.y-ball.r < 0) ball.velocityY = -ball.velocityY; let player = (ball.x < pCvs.width/2) ? user : com; if(ball.x-ball.r < player.x+player.w && ball.x+ball.r > player.x && ball.y-ball.r < player.y+player.h && ball.y+ball.r > player.y) { let cp = (ball.y - (player.y + player.h/2)) / (player.h/2); let ang = (Math.PI/4) * cp; let dir = (ball.x < pCvs.width/2) ? 1 : -1; ball.velocityX = dir * ball.speed * Math.cos(ang); ball.velocityY = ball.speed * Math.sin(ang); ball.speed += 0.5; } if(ball.x-ball.r < 0) { com.score++; resetBall(); } else if(ball.x+ball.r > pCvs.width) { user.score++; resetBall(); } }
+            function resetBall(){ ball.x = pCvs.width/2; ball.y = pCvs.height/2; ball.speed = 5; ball.velocityX = -ball.velocityX; }
+            function drawPong() { pCtx.fillStyle = "#1C1917"; pCtx.fillRect(0,0,pCvs.width,pCvs.height); pCtx.fillStyle="#FFF"; pCtx.font="20px Arial"; pCtx.fillText(user.score, pCvs.width/4, pCvs.height/5); pCtx.fillText(com.score, 3*pCvs.width/4, pCvs.height/5); pCtx.fillStyle=user.color; pCtx.fillRect(user.x, user.y, user.w, user.h); pCtx.fillStyle=com.color; pCtx.fillRect(com.x, com.y, com.w, com.h); pCtx.fillStyle=ball.color; pCtx.beginPath(); pCtx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2, false); pCtx.closePath(); pCtx.fill(); }
+            gameIntervals.push(setInterval(() => { updatePong(); drawPong(); }, 1000/60));
+        }
+
+        function stopGames() { gameIntervals.forEach(clearInterval); gameIntervals = []; }
+
+        function render(page) {
+            stopGames();
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.getElementById(`btn-${page}`);
             if(activeBtn) activeBtn.classList.add('active');
             
-            if (page === 'home') {
-                app.innerHTML = renderHome();
-                setTimeout(initGames, 100); // Start games after DOM render
-            }
+            const nav = db[currentLang].nav;
+            document.getElementById('btn-home').innerText = nav.home;
+            document.getElementById('btn-tax').innerText = nav.tax;
+            document.getElementById('btn-cloud').innerText = nav.cloud;
+            document.getElementById('btn-trans').innerText = nav.trans;
+            document.getElementById('btn-resume').innerText = nav.resume;
+            document.getElementById('btn-projects').innerText = nav.portfolio;
+            document.getElementById('btn-contact').innerText = nav.contact;
+
+            if (page === 'home') { app.innerHTML = renderHome(); setTimeout(initGames, 100); }
+            if (page === 'tax') app.innerHTML = renderTax();
+            if (page === 'cloud') app.innerHTML = renderCloud();
+            if (page === 'trans') app.innerHTML = renderTrans();
             if (page === 'resume') app.innerHTML = renderResume();
             if (page === 'projects') app.innerHTML = renderProjects();
             if (page === 'contact') app.innerHTML = renderContact();
             window.scrollTo(0,0);
         }
-
-        document.addEventListener('DOMContentLoaded', () => { render('home'); });
     </script>
 </body>
 </html>
