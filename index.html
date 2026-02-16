@@ -3,15 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ahmad Ansori - Creative Developer & Tax Consultant</title>
+    
+    <title>Ahmad Ansori | Fullstack Developer, Cloud Expert & Konsultan Pajak AS</title>
+    <meta name="description" content="Ahmad Ansori adalah Fullstack Developer, pakar Cloud (AWS/Azure), Penerjemah Tersumpah, dan Konsultan Pajak Amerika Serikat berlisensi. Siap melayani kebutuhan IT dan legal Anda.">
+    <meta name="keywords" content="Ahmad Ansori, Fullstack Developer Lampung, Konsultan Pajak AS Indonesia, Cloud Architect AWS, Penerjemah Tersumpah USCIS, Jasa IT Kota Metro">
+    <meta name="author" content="Ahmad Ansori">
+
+    <meta property="og:title" content="Ahmad Ansori | Tech & Legal Expert">
+    <meta property="og:description" content="Menggabungkan teknologi (Web, IoT, Cloud) dengan kepatuhan legal (Pajak AS & Penerjemah USCIS).">
+    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/d/d8/Ahmadansori.png"> 
+    <meta property="og:url" content="https://ahmadansori.com/">
+    <meta property="og:type" content="website">
+
+    <link rel="canonical" href="https://ahmadansori.com/">
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
 
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ahmad Ansori",
+      "url": "https://ahmadansori.com",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d8/Ahmadansori.png",
+      "jobTitle": "Fullstack Developer & US Tax Consultant",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "GunaPedia"
+      },
+      "alumniOf": [
+        {
+          "@type": "CollegeOrUniversity",
+          "name": "University of the People"
+        },
+        {
+          "@type": "CollegeOrUniversity",
+          "name": "Universitas Lampung"
+        }
+      ],
+      "sameAs": [
+        "https://github.com/ansoridev",
+        "https://id.wikipedia.org/wiki/Ahmad_Ansori"
+      ],
+      "knowsAbout": ["Python", "Cloud Computing", "US Tax Law", "Internet of Things", "Web Development"]
+    }
+    </script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -246,6 +286,7 @@
     </style>
 </head>
 <body>
+
     <noscript>
         <div style="display:none;">
             <h1>Ahmad Ansori - Fullstack Developer & Konsultan Pajak AS</h1>
@@ -259,6 +300,7 @@
             </ul>
         </div>
     </noscript>
+
     <div id="lang-splash">
         <div class="splash-content">
             <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Welcome.</h1>
@@ -278,7 +320,7 @@
 
     <div class="nav-wrapper">
         <nav class="nav-glass">
-            <a href="#" class="nav-brand" onclick="render('home')">Ansori.</a>
+            <a href="#home" class="nav-brand" onclick="render('home')">Ansori.</a>
             <div class="nav-links">
                 <button class="nav-btn active" onclick="render('home')" id="btn-home">Home</button>
                 <button class="nav-btn" onclick="render('tax')" id="btn-tax">Tax</button>
@@ -509,7 +551,10 @@
             const splash = document.getElementById('lang-splash');
             if(splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 500); }
             document.getElementById('lang-btn').innerText = lang === 'id' ? 'ID' : 'EN';
-            render('home');
+            
+            // Re-render current page based on hash
+            const currentHash = window.location.hash.replace('#', '') || 'home';
+            render(currentHash);
         }
 
         function toggleLanguage() { setLanguage(currentLang === 'id' ? 'en' : 'id'); }
@@ -532,7 +577,7 @@
                         <div style="margin-bottom:30px;">${skillTags}</div>
                         <div><button class="btn-primary" onclick="render('contact')">${txt.profile.btn_collab}</button><a href="${data.profile.resumeLink}" target="_blank" style="margin-left:15px; text-decoration:none; color:var(--text-main); font-weight:600;">${txt.profile.btn_resume} &rarr;</a></div>
                     </div>
-                    <div class="bento-item col-span-4" style="padding:0;"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Ahmadansori.png" style="width:100%; height:100%; object-fit:cover;" alt="Profile"></div>
+                    <div class="bento-item col-span-4" style="padding:0;"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Ahmadansori.png" style="width:100%; height:100%; object-fit:cover;" alt="Potret Ahmad Ansori Developer"></div>
                     <div class="bento-item col-span-4" style="background:var(--bg-surface);">
                         <h3>🏆 ${txt.awards_title}</h3>
                         <div style="margin-top:20px;">${recentAwards}</div>
@@ -644,7 +689,22 @@
             const ctx = cvs.getContext('2d');
             cvs.width = cvs.getBoundingClientRect().width; cvs.height = cvs.getBoundingClientRect().height;
             const box = 20; let snake = [{x: 10 * box, y: 10 * box}]; let food = {x: Math.floor(Math.random()*(cvs.width/box))*box, y: Math.floor(Math.random()*(cvs.height/box))*box}; let d = "RIGHT"; let score = 0;
-            document.addEventListener("keydown", (e) => { if(e.keyCode==37 && d!="RIGHT") d="LEFT"; else if(e.keyCode==38 && d!="DOWN") d="UP"; else if(e.keyCode==39 && d!="LEFT") d="RIGHT"; else if(e.keyCode==40 && d!="UP") d="DOWN"; });
+            
+            function changeDirection(e) {
+                // Prevent default scrolling for arrow keys
+                if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+                    e.preventDefault();
+                }
+                if(e.keyCode==37 && d!="RIGHT") d="LEFT"; 
+                else if(e.keyCode==38 && d!="DOWN") d="UP"; 
+                else if(e.keyCode==39 && d!="LEFT") d="RIGHT"; 
+                else if(e.keyCode==40 && d!="UP") d="DOWN"; 
+            }
+            document.addEventListener("keydown", changeDirection);
+            
+            // Cleanup event listener when leaving page
+            cvs.gameCleanup = () => document.removeEventListener("keydown", changeDirection);
+
             function drawSnake() { ctx.fillStyle = "#1C1917"; ctx.fillRect(0, 0, cvs.width, cvs.height); for(let i=0; i<snake.length; i++) { ctx.fillStyle = (i==0)?"#D97706":"#FEF3C7"; ctx.fillRect(snake[i].x, snake[i].y, box, box); } ctx.fillStyle = "red"; ctx.fillRect(food.x, food.y, box, box); let snakeX = snake[0].x; let snakeY = snake[0].y; if(d=="LEFT") snakeX-=box; if(d=="UP") snakeY-=box; if(d=="RIGHT") snakeX+=box; if(d=="DOWN") snakeY+=box; if(snakeX<0 || snakeX>=cvs.width || snakeY<0 || snakeY>=cvs.height) { snake = [{x: 10 * box, y: 10 * box}]; score = 0; } if(Math.abs(snakeX-food.x)<box && Math.abs(snakeY-food.y)<box) { score++; food = {x: Math.floor(Math.random()*(cvs.width/box))*box, y: Math.floor(Math.random()*(cvs.height/box))*box}; } else { snake.pop(); } let newHead = {x: snakeX, y: snakeY}; snake.unshift(newHead); ctx.fillStyle = "white"; ctx.font = "20px Arial"; ctx.fillText("Score: " + score, 10, 25); }
             gameIntervals.push(setInterval(drawSnake, 100));
 
@@ -658,10 +718,23 @@
             gameIntervals.push(setInterval(() => { updatePong(); drawPong(); }, 1000/60));
         }
 
-        function stopGames() { gameIntervals.forEach(clearInterval); gameIntervals = []; }
+        function stopGames() { 
+            gameIntervals.forEach(clearInterval); 
+            gameIntervals = []; 
+            const snakeCvs = document.getElementById('snakeGame');
+            if (snakeCvs && snakeCvs.gameCleanup) snakeCvs.gameCleanup();
+        }
 
+        // Core Render Function using Hash Routing
         function render(page) {
             stopGames();
+            
+            // Update URL Hash for GitHub Pages compatibility
+            const hashPage = page === 'home' ? '' : `#${page}`;
+            if(window.location.hash !== hashPage) {
+                window.history.pushState({page: page}, "", hashPage || window.location.pathname);
+            }
+
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.getElementById(`btn-${page}`);
             if(activeBtn) activeBtn.classList.add('active');
@@ -685,6 +758,25 @@
             window.scrollTo(0,0);
         }
         
+        // Listen to browser Back/Forward buttons (Hash changes)
+        window.addEventListener('popstate', () => {
+            const currentHash = window.location.hash.replace('#', '') || 'home';
+            render(currentHash);
+        });
+
+        // Initialize App based on current Hash
+        window.addEventListener('DOMContentLoaded', () => {
+             // Language logic is handled by the splash screen on first load
+             // But if someone shares a direct link (e.g., ahmadansori.com/#tax), we catch it here:
+             const currentHash = window.location.hash.replace('#', '');
+             if (currentHash) {
+                 // Hide splash screen immediately if it's a direct deep-link
+                 const splash = document.getElementById('lang-splash');
+                 if(splash) splash.style.display = 'none';
+                 render(currentHash);
+             }
+        });
+
         // Handle Resize for Canvas
         window.addEventListener('resize', () => {
             if(document.getElementById('snakeGame')) { stopGames(); initGames(); }
