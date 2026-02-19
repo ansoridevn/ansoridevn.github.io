@@ -11,8 +11,8 @@
     <meta name="apple-mobile-web-app-title" content="Quran">
     <meta name="theme-color" content="#FFFFFF">
     
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/17187/17187224.png">
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/17187/17187224.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3208/3208696.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3208/3208696.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,30 +49,44 @@
             overflow: hidden;
         }
 
+        /* --- SPLASH SCREEN --- */
+        #app-splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-surface); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .splash-icon {
+            font-size: 4.5rem; color: var(--primary); margin-bottom: 20px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
+
         /* --- SIDEBAR --- */
         aside {
             width: 320px;
             background: var(--bg-surface);
             border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
             z-index: 30;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             padding-top: var(--safe-top);
             position: relative; 
         }
 
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            background: var(--bg-surface);
+        .sidebar-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 25;
+            opacity: 0; visibility: hidden; transition: 0.3s ease;
         }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
 
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); background: var(--bg-surface); }
         .app-title { font-weight: 700; font-size: 1.4rem; color: var(--primary); display: flex; align-items: center; gap: 10px; margin-bottom: 20px;}
         
         .close-sidebar-btn {
             display: none;
-            position: absolute; top: 20px; right: 20px;
+            position: absolute; top: calc(var(--safe-top) + 15px); right: 20px;
             background: var(--bg-base); width: 36px; height: 36px;
             border-radius: 50%; align-items: center; justify-content: center;
             color: var(--text-muted); font-size: 1.1rem; cursor: pointer;
@@ -87,10 +101,7 @@
             display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;
         }
         .time-now { font-weight: 700; color: var(--text-main); font-size: 1.1rem; }
-        .prayer-badge { 
-            font-size: 0.75rem; background: var(--primary-soft); color: var(--primary); 
-            padding: 4px 8px; border-radius: 6px; font-weight: 700;
-        }
+        .prayer-badge { font-size: 0.75rem; background: var(--primary-soft); color: var(--primary); padding: 4px 8px; border-radius: 6px; font-weight: 700; }
 
         .location-widget {
             background: #F0FDF4; padding: 12px; border-radius: 12px; border: 1px solid var(--primary-soft);
@@ -98,10 +109,8 @@
         }
         .location-text { font-size: 0.85rem; font-weight: 600; }
 
-        /* Mobile Qibla Button (Sidebar) */
         .mobile-qibla-item {
-            display: none; /* Hidden on desktop */
-            background: var(--bg-base); padding: 12px; border-radius: 12px; border: 1px solid var(--border);
+            display: none; background: var(--bg-base); padding: 12px; border-radius: 12px; border: 1px solid var(--border);
             align-items: center; gap: 10px; cursor: pointer; margin-bottom: 15px; color: var(--accent); font-weight: 600;
         }
 
@@ -139,9 +148,7 @@
         main { flex: 1; display: flex; flex-direction: column; position: relative; width: 100%; background: var(--bg-base); }
 
         header {
-            height: calc(64px + var(--safe-top));
-            padding-top: var(--safe-top);
-            border-bottom: 1px solid var(--border);
+            height: calc(64px + var(--safe-top)); padding-top: var(--safe-top); border-bottom: 1px solid var(--border);
             display: flex; align-items: center; padding-left: 15px; padding-right: 15px; justify-content: space-between;
             background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); z-index: 10;
         }
@@ -171,10 +178,9 @@
         }
         .qibla-btn:active { transform: scale(0.9); background: var(--accent); color: white; }
 
-        /* Reader Area */
         #reader { 
             flex: 1; overflow-y: auto; 
-            padding: 20px; padding-bottom: calc(80px + var(--safe-bottom)); /* Extra space for fixed footer */
+            padding: 20px; padding-bottom: calc(80px + var(--safe-bottom));
             scroll-behavior: smooth; 
         }
         
@@ -266,14 +272,20 @@
 
         /* Compass */
         .compass-container { position: relative; width: 200px; height: 200px; margin: 20px auto; }
-        .compass-disc { width: 100%; height: 100%; border-radius: 50%; background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Compass_Rose_English_North.svg/1024px-Compass_Rose_English_North.svg.png') no-repeat center center; background-size: cover; transition: transform 0.1s ease-out; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-        .kaaba-pointer { 
-            position: absolute; top: 50%; left: 50%; width: 4px; height: 90px; 
-            background: var(--accent); transform-origin: bottom center; 
-            transform: translate(-50%, -100%) rotate(0deg); z-index: 5; border-radius: 4px;
+        .compass-disc { 
+            width: 100%; height: 100%; border-radius: 50%; position: relative;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Compass_Rose_English_North.svg/1024px-Compass_Rose_English_North.svg.png') no-repeat center center; 
+            background-size: cover; transition: transform 0.1s ease-out; box-shadow: 0 0 20px rgba(0,0,0,0.1); 
         }
-        .kaaba-pointer::after {
-            content: ''; position: absolute; top: -10px; left: -6px; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 16px solid var(--accent);
+        .kaaba-pointer { 
+            position: absolute; top: 50%; left: 50%; width: 2px; height: 50%; 
+            background: var(--accent); transform-origin: bottom center; 
+            transform: translate(-50%, -100%) rotate(0deg); z-index: 5;
+            display: flex; justify-content: center;
+        }
+        .kaaba-icon-wrapper {
+            position: absolute; top: -15px; background: white; border-radius: 50%; 
+            padding: 4px; box-shadow: var(--shadow); border: 1px solid var(--border);
         }
 
         @media (max-width: 900px) {
@@ -283,24 +295,30 @@
             .close-sidebar-btn { display: flex; }
             .ayah-arabic { font-size: 2rem; }
             
-            /* Clean Sidebar on Mobile */
             .time-widget, .location-widget, .widget-label { display: none; }
             .mobile-qibla-item { display: flex; }
             
-            /* Header adjustments */
             .mobile-clock { display: flex; }
-            .qibla-btn { display: none; } /* Hide header qibla, show in sidebar */
+            .qibla-btn { display: none; }
             .surah-title { font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
         }
     </style>
 </head>
 <body>
 
+    <div id="app-splash">
+        <i class="fas fa-book-quran splash-icon"></i>
+        <h2 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 8px;">Al-Quran</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Menyiapkan Halaman...</p>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <aside id="sidebar">
         <div class="sidebar-header">
             <div class="close-sidebar-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
             <div class="app-title">
-                <i class="fas fa-quran"></i> <span data-i18n="appTitle">Quran</span>
+                <i class="fas fa-book-quran"></i> <span data-i18n="appTitle">Quran</span>
             </div>
             
             <div class="widget-label">Time & Prayer</div>
@@ -403,11 +421,16 @@
         <div class="modal-content">
             <div class="modal-close-icon" onclick="document.getElementById('qibla-modal').classList.remove('active')"><i class="fas fa-times"></i></div>
             <h3 class="modal-title">Qibla Finder</h3>
-            <p class="modal-text" style="margin-bottom:10px;">Align the needle to face the Kaaba.</p>
+            <p class="modal-text" style="margin-bottom:10px;">Align the Kaaba icon with North.</p>
             
             <div class="compass-container">
-                <div class="compass-disc" id="compass-disc"></div>
-                <div class="kaaba-pointer" id="kaaba-pointer"></div>
+                <div class="compass-disc" id="compass-disc">
+                    <div class="kaaba-pointer" id="kaaba-pointer">
+                        <div class="kaaba-icon-wrapper">
+                            <i class="fas fa-kaaba" style="color: #1C1917; font-size: 1.2rem;"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <button class="modal-btn" id="start-compass-btn" onclick="initCompass()">Start Compass</button>
@@ -418,10 +441,8 @@
     <audio id="quran-audio"></audio>
 
     <script>
-        // --- INDONESIAN SURAH NAMES ---
         const surahID = ["Pembukaan", "Sapi Betina", "Keluarga Imran", "Wanita", "Hidangan", "Binatang Ternak", "Tempat Tertinggi", "Harta Rampasan Perang", "Pengampunan", "Yunus", "Hud", "Yusuf", "Guruh", "Ibrahim", "Hijr", "Lebah", "Perjalanan Malam", "Gua", "Maryam", "Thaha", "Para Nabi", "Haji", "Orang-Orang Mukmin", "Cahaya", "Pembeda", "Para Penyair", "Semut", "Kisah-Kisah", "Laba-Laba", "Romawi", "Luqman", "Sajdah", "Golongan Bersekutu", "Saba'", "Pencipta", "Yasin", "Barisan-Barisan", "Sad", "Rombongan", "Orang Beriman", "Yang Dijelaskan", "Musyawarah", "Perhiasan", "Kabut", "Yang Berlutut", "Bukit Pasir", "Muhammad", "Kemenangan", "Kamar-Kamar", "Qaf", "Angin yang Menerbangkan", "Bukit", "Bintang", "Bulan", "Yang Maha Pemurah", "Hari Kiamat", "Besi", "Wanita yang Menggugat", "Pengusiran", "Wanita yang Diuji", "Barisan", "Jumat", "Orang-Orang Munafik", "Hari Dinampakkan Kesalahan", "Talak", "Pengharaman", "Kerajaan", "Pena", "Hari Kiamat", "Tempat-Tempat Naik", "Nuh", "Jin", "Orang yang Berselimut", "Orang yang Berkemul", "Hari Kiamat", "Manusia", "Malaikat-Malaikat", "Berita Besar", "Malaikat Pencabut", "Bermuka Masam", "Penggulungan", "Terbelah", "Orang-Orang Curang", "Terbelah", "Gugusan Bintang", "Yang Datang di Malam Hari", "Yang Paling Tinggi", "Hari Pembalasan", "Fajar", "Negeri", "Matahari", "Malam", "Waktu Duha", "Kelapangan", "Buah Tin", "Segumpal Darah", "Kemuliaan", "Bukti", "Kegoncangan", "Kuda Perang", "Hari Kiamat", "Bermegah-Megahan", "Masa", "Pengumpat", "Gajah", "Quraisy", "Barang-Barang Berguna", "Nikmat yang Banyak", "Orang-Orang Kafir", "Pertolongan", "Gejolak Api", "Ikhlas", "Waktu Subuh", "Manusia"];
 
-        // --- CONFIG ---
         const API_BASE = "https://api.alquran.cloud/v1";
         const PRAYER_API = "https://api.aladhan.com/v1/timings";
         let allSurahs = [];
@@ -431,20 +452,45 @@
         let userCoords = { lat: -6.2, lng: 106.8 };
 
         const i18n = {
-            en: {
-                appTitle: "Quran", searchPlaceholder: "Search Surah...", lastRead: "Last Reading", selectSurah: "Select Surah", savedTitle: "Saved!", savedMsg: "Surah {s}, Ayah {a} saved.", continueBtn: "Continue Reading"
-            },
-            id: {
-                appTitle: "Al-Quran", searchPlaceholder: "Cari Surah...", lastRead: "Terakhir Dibaca", selectSurah: "Pilih Surah", savedTitle: "Tersimpan!", savedMsg: "Surah {s}, Ayat {a} tersimpan.", continueBtn: "Lanjutkan Membaca"
-            }
+            en: { appTitle: "Quran", searchPlaceholder: "Search Surah...", lastRead: "Last Reading", selectSurah: "Select Surah", savedTitle: "Saved!", savedMsg: "Surah {s}, Ayah {a} saved.", continueBtn: "Continue Reading" },
+            id: { appTitle: "Al-Quran", searchPlaceholder: "Cari Surah...", lastRead: "Terakhir Dibaca", selectSurah: "Pilih Surah", savedTitle: "Tersimpan!", savedMsg: "Surah {s}, Ayat {a} tersimpan.", continueBtn: "Lanjutkan Membaca" }
         };
 
+        // --- INIT & SPLASH ---
         window.addEventListener('load', () => { 
             initLocationAndPrayer();
             updateLangUI();
             fetchSurahList();
             checkLastRead();
+            initSidebarGestures();
+            
+            // Remove Splash Screen smoothly
+            setTimeout(() => {
+                const splash = document.getElementById('app-splash');
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 500);
+            }, 1000);
         });
+
+        // --- SIDEBAR LOGIC ---
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+
+        function initSidebarGestures() {
+            let touchStartX = 0;
+            let touchEndX = 0;
+            const sidebar = document.getElementById('sidebar');
+
+            sidebar.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+            sidebar.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) { // Swipe Left
+                    if (sidebar.classList.contains('open')) toggleSidebar();
+                }
+            }, {passive: true});
+        }
 
         function switchLang(lang) {
             if(currentLang === lang) return;
@@ -470,7 +516,7 @@
         async function initLocationAndPrayer() {
             startClock(); 
             try {
-                const locRes = await fetch('https://ipinfo.io/json');
+                const locRes = await fetch('https://ipinfo.io/json?token=648603417769e5');
                 const locData = await locRes.json();
                 const [lat, lng] = locData.loc.split(',');
                 userCoords = { lat: parseFloat(lat), lng: parseFloat(lng) };
@@ -489,7 +535,6 @@
                 updatePrayerTable();
 
             } catch (e) {
-                console.log("Loc Failed");
                 document.getElementById('user-location').innerText = "Jakarta (Fallback)";
                 document.getElementById('prayer-loc-display').innerText = "Jakarta (Fallback)";
                 prayerTimings = { Fajr: "04:40", Dhuhr: "12:00", Asr: "15:15", Maghrib: "18:05", Isha: "19:15" };
@@ -555,7 +600,10 @@
             document.getElementById('prayer-table-body').innerHTML = html;
         }
 
-        function openQibla() { document.getElementById('qibla-modal').classList.add('active'); }
+        function openQibla() { 
+            document.getElementById('qibla-modal').classList.add('active'); 
+            if(document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
+        }
         
         function initCompass() {
             if (typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -565,7 +613,7 @@
                             window.addEventListener('deviceorientation', handleOrientation);
                             document.getElementById('start-compass-btn').style.display = 'none';
                             document.getElementById('compass-status').innerText = "Compass Active";
-                        } else { alert('Permission denied'); }
+                        } else { alert('Permission denied. Please allow sensors in settings.'); }
                     })
                     .catch(console.error);
             } else {
@@ -577,8 +625,15 @@
 
         function handleOrientation(e) {
             const qibla = calculateQibla(userCoords.lat, userCoords.lng);
-            let heading = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+            let heading = e.webkitCompassHeading;
+            if (heading === undefined || heading === null) {
+                heading = 360 - e.alpha; // Android approximation
+            }
+            
+            // Rotate disc to align with true North
             document.getElementById('compass-disc').style.transform = `rotate(${-heading}deg)`;
+            
+            // Rotate Kaaba pointer inside the disc exactly to the Qibla Angle
             document.getElementById('kaaba-pointer').style.transform = `translate(-50%, -100%) rotate(${qibla}deg)`;
         }
 
@@ -626,7 +681,7 @@
             document.getElementById('ayah-container').innerHTML = '';
             document.getElementById('bismillah').style.display = 'none';
             document.getElementById('app-footer').style.display = 'none';
-            if(window.innerWidth <= 900) document.getElementById('sidebar').classList.remove('open');
+            if(document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
 
             document.querySelectorAll('.surah-item').forEach(el => el.classList.remove('active'));
             const activeItem = document.getElementById(`surah-item-${number}`);
@@ -634,7 +689,6 @@
 
             try {
                 const editionLang = currentLang === 'id' ? 'id.indonesian' : 'en.sahih';
-                // Using Alquran.cloud API
                 const url = `${API_BASE}/surah/${number}/editions/quran-uthmani,en.transliteration,${editionLang}`;
                 const res = await fetch(url);
                 const data = await res.json();
@@ -728,7 +782,6 @@
         }
 
         function closeModal(e) { if(e.target.id === 'save-modal' || e.target.id === 'qibla-modal') e.target.classList.remove('active'); }
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
         function filterSurahs() {
             const query = document.getElementById('search').value.toLowerCase();
             const filtered = allSurahs.filter(s => 
