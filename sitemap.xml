@@ -2,7 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <url>
       <loc>https://ahmadansori.com/</loc>
-      <lastmod>2026-02-16</lastmod>
+      <lastmod>2026-02-19</lastmod>
       <priority>1.0</priority>
+   </url>
+   
+   <url>
+      <loc>https://ahmadansori.com/quran.html</loc>
+      <lastmod>2026-02-19</lastmod>
+      <priority>0.8</priority>
+   </url>
+
+   <url>
+      <loc>https://ahmadansori.com/gunapedia.html</loc>
+      <lastmod>2026-02-19</lastmod>
+      <priority>0.8</priority>
    </url>
 </urlset>
