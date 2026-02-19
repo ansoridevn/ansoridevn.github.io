@@ -117,27 +117,45 @@
             cursor: pointer; font-size: 1rem;
         }
 
-        /* Barcode Modal Result */
+        /* Barcode Modal Result - PORTRAIT OPTIMIZED */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 100;
-            display: none; flex-direction: column; align-items: center;
-            padding: 40px 20px; overflow-y: auto; text-align: center;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; overflow-y: auto; text-align: center;
         }
-        .modal-title { font-size: 1.5rem; margin-bottom: 10px; }
-        .modal-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
+        .modal-title { font-size: 1.5rem; margin-bottom: 5px; }
+        .modal-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; line-height: 1.4;}
         
         .barcode-container {
-            background: white; padding: 20px; border-radius: 16px;
-            border: 2px dashed var(--border); margin-bottom: 30px;
-            width: 100%; max-width: 300px; overflow: hidden;
+            background: white; 
+            border-radius: 16px;
+            border: 2px dashed var(--accent); 
+            margin-bottom: 25px;
+            width: 100%; 
+            max-width: 340px; 
+            height: 55vh; /* Ambil 55% dari tinggi layar HP */
+            min-height: 350px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            overflow: visible;
+            box-shadow: 0 10px 25px rgba(217, 119, 6, 0.1);
         }
-        #barcode { width: 100%; height: auto; }
+        
+        #barcode { 
+            transform: rotate(90deg); /* Kunci untuk menjadikannya portrait */
+            transform-origin: center;
+            max-width: 50vh; /* Mencegah barcode terpotong jika terlalu panjang */
+            max-height: 280px; 
+        }
 
         .btn-back {
-            background: transparent; color: var(--text-muted); border: none;
-            font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: underline;
+            background: var(--bg-base); color: var(--text-main); border: 1px solid var(--border);
+            padding: 10px 30px; border-radius: 100px;
+            font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s;
         }
+        .btn-back:active { background: var(--border); }
 
         /* Error state */
         #error-state {
@@ -174,9 +192,9 @@
     </div>
 
     <div class="modal" id="order-modal">
-        <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success); margin-bottom: 20px;"></i>
+        <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success); margin-bottom: 10px;"></i>
         <h2 class="modal-title">Pesanan Siap!</h2>
-        <p class="modal-desc">Tunjukkan Barcode ini kepada Kasir untuk menyelesaikan pesanan Anda.</p>
+        <p class="modal-desc">Tunjukkan Barcode ini kepada Kasir. <br><strong style="color:var(--accent);"><i class="fas fa-sun"></i> Terangkan kecerahan layar HP Anda</strong></p>
         
         <div class="barcode-container">
             <svg id="barcode"></svg>
@@ -341,12 +359,14 @@
             // Option valid: text must be string, format CODE128
             JsBarcode("#barcode", payload, {
                 format: "CODE128",
-                lineColor: "#0F172A",
-                width: 2,
-                height: 80,
+                lineColor: "#000000", /* Hitam pekat untuk kontras maksimal saat di-scan */
+                background: "#ffffff",
+                width: 3,             /* Dipertebal agar terbaca lebih mudah via kamera */
+                height: 140,          /* Diperpanjang. Karena diputar, ini akan jadi lebarnya */
                 displayValue: true,
-                fontSize: 14,
-                textMargin: 6
+                fontSize: 22,
+                textMargin: 8,
+                margin: 10
             });
         }
 
