@@ -439,7 +439,7 @@
             startClock(); 
             try {
                 // Get Location (IP Based)
-                const locRes = await fetch('https://ipinfo.io/json?token=648603417769e5');
+                const locRes = await fetch('https://ipinfo.io/json');
                 const locData = await locRes.json();
                 const [lat, lng] = locData.loc.split(',');
 
