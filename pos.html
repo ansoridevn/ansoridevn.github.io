@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://unpkg.com/adhan@4.4.1/lib/Adhan.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         :root {
@@ -104,13 +107,17 @@
 
         /* --- MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-        .modal-content { background: white; border-radius: var(--radius); width: 100%; max-width: 500px; padding: 30px; box-shadow: var(--shadow-md); position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: white; border-radius: var(--radius); width: 100%; max-width: 450px; padding: 30px; box-shadow: var(--shadow-md); position: relative; max-height: 90vh; overflow-y: auto; }
         .modal-close { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--text-muted); }
 
         /* Payment Modal Specific */
         .pay-amount-display { font-size: 2.5rem; font-weight: 800; text-align: center; color: var(--success); margin-bottom: 20px; }
         .quick-cash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .quick-cash-btn { padding: 10px; background: var(--bg-base); border: 1px solid var(--border); border-radius: 8px; text-align: center; cursor: pointer; font-weight: 600; }
+
+        /* QR Menu Modal */
+        #qr-container { display: flex; justify-content: center; margin: 20px 0; padding: 20px; background: var(--bg-base); border-radius: 12px; border: 1px solid var(--border); }
+        #qr-container img { max-width: 100%; height: auto; }
 
         /* Receipt Format (58mm Thermal) */
         #receipt-print-area { width: 300px; margin: 0 auto; background: white; padding: 20px; font-family: monospace; color: black; border: 1px solid #ccc; }
@@ -121,7 +128,6 @@
         /* --- PRINT MEDIA QUERIES --- */
         @media print {
             body * { visibility: hidden; }
-            
             body.print-mode-receipt #receipt-modal, body.print-mode-receipt #receipt-print-area, body.print-mode-receipt #receipt-print-area * { visibility: visible; }
             body.print-mode-receipt #receipt-print-area { position: absolute; left: 0; top: 0; width: 58mm; border: none; padding: 0; margin: 0; font-size: 12px; }
             
@@ -139,7 +145,7 @@
     <div id="setup-screen">
         <div class="setup-card">
             <h1 style="text-align: center; margin-bottom: 5px;">Ansori POS</h1>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 30px;">Sistem Kasir Offline UMKM (Pro Edition)</p>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 30px;">Sistem Kasir Offline UMKM (Tahap 5)</p>
             
             <div class="input-group">
                 <label class="input-label">Nama Bisnis / Toko</label>
@@ -195,7 +201,11 @@
             <div id="view-kasir" class="view-section active">
                 <div class="pos-products">
                     <div class="search-bar">
-                        <input type="text" id="pos-search" class="input-field" placeholder="Cari Nama / Scan Barcode (F2)..." style="margin:0;" autofocus autocomplete="off">
+                        <input type="text" id="pos-search" class="input-field" placeholder="Cari Nama / Scan Barcode Produk atau HP Pelanggan (F2)..." style="margin:0;" autofocus autocomplete="off">
+                        
+                        <button class="btn btn-outline" style="white-space:nowrap; padding: 0 15px;" onclick="showQRMenu()" title="Tampilkan Menu QR ke Pelanggan">
+                            <i class="fas fa-qrcode"></i> <span style="display:none; @media(min-width:768px){display:inline;}">QR Menu</span>
+                        </button>
                     </div>
                     <div class="product-grid" id="pos-product-grid"></div>
                 </div>
@@ -365,6 +375,18 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modal-qr-menu">
+        <div class="modal-content" style="text-align:center; max-width: 400px;">
+            <i class="fas fa-times modal-close" onclick="closeModal('modal-qr-menu')"></i>
+            <h2 style="margin-bottom: 5px;">Self-Order QR</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px; font-size: 0.9rem;">Suruh pelanggan scan kode ini untuk memilih menu dari HP mereka secara offline.</p>
+            
+            <div id="qr-container"></div>
+            
+            <p style="color:var(--text-muted); margin-top:20px; font-size: 0.8rem;">Setelah pelanggan selesai, mereka akan memberikan Barcode Pesanan untuk Anda scan di kolom Kasir.</p>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="modal-setup-import">
         <div class="modal-content" style="max-width:400px;">
             <i class="fas fa-times modal-close" onclick="closeModal('modal-setup-import')"></i>
@@ -526,7 +548,18 @@
                 startApp();
             }
             setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}); }, 1000);
-            document.getElementById('pos-search').addEventListener('input', (e) => renderPOSProducts(e.target.value));
+            
+            // SMART SCANNER LISTENER
+            document.getElementById('pos-search').addEventListener('input', (e) => {
+                let val = e.target.value.trim();
+                // Check if this is a customer order payload (Self-Order App)
+                if(val.startsWith('ORD@')) {
+                    processCustomerOrder(val);
+                    e.target.value = ''; // clear input
+                    return;
+                }
+                renderPOSProducts(val);
+            });
         };
 
         let selectedMode = 'fnb';
@@ -575,6 +608,81 @@
             if(view === 'dapur') renderKDS();
             if(view === 'booking') renderBookings();
         }
+
+        /* =========================================
+           SELF-ORDER QR SYSTEM (NEW)
+        ========================================= */
+        function showQRMenu() {
+            if(products.length === 0) return sysAlert("Toko belum memiliki produk!", "error");
+
+            // Format minimal: ID, Nama dipotong non-alfanumerik, Harga, Stok (-1 = Jasa)
+            // Ini untuk menjaga URL tetap pendek agar QR code mudah di scan
+            const menuData = products.map(p => [p.id, p.name.replace(/[^a-zA-Z0-9 ]/g, '').substring(0,20), p.price, p.trackStock ? p.stock : -1]);
+            const storeData = { n: config.name, m: menuData };
+            
+            const jsonStr = JSON.stringify(storeData);
+            const encoded = btoa(encodeURIComponent(jsonStr)); // safe base64
+            
+            // Generate link to pos_order.html
+            let baseUrl = window.location.href.split('?')[0].replace('pos.html', '');
+            if(!baseUrl.endsWith('/')) baseUrl += '/';
+            const url = baseUrl + 'pos_order.html?data=' + encoded;
+
+            if(url.length > 2000) return sysAlert("Menu Anda terlalu banyak (URL melebihi batas QR Code). Hapus beberapa item.", "error");
+
+            document.getElementById('qr-container').innerHTML = ''; // clear previous
+            
+            try {
+                new QRCode(document.getElementById("qr-container"), {
+                    text: url,
+                    width: 250,
+                    height: 250,
+                    colorDark : "#0F172A",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.L // Low ECC for max capacity
+                });
+                document.getElementById('modal-qr-menu').style.display = 'flex';
+            } catch(e) {
+                sysAlert("Gagal generate QR Code.", "error");
+            }
+        }
+
+        // Parse order from Customer Phone
+        function processCustomerOrder(code) {
+            // Expected format: ORD@id:qty,id:qty
+            try {
+                const dataStr = code.replace('ORD@', '');
+                const items = dataStr.split(',');
+                let addedCount = 0;
+                
+                items.forEach(itemStr => {
+                    const [idStr, qtyStr] = itemStr.split(':');
+                    const id = parseInt(idStr);
+                    const qty = parseInt(qtyStr);
+                    
+                    const prod = products.find(p => p.id === id);
+                    if(prod) {
+                        const existing = cart.find(c => c.id === id);
+                        if(existing) {
+                            existing.qty += qty;
+                        } else {
+                            cart.push({ ...prod, qty: qty });
+                        }
+                        addedCount++;
+                    }
+                });
+                
+                if(addedCount > 0) {
+                    renderCart();
+                    sysAlert(`Berhasil menambahkan ${addedCount} pesanan dari HP Pelanggan!`, 'success');
+                } else {
+                    sysAlert('Kode pesanan tidak dikenali (produk mungkin telah dihapus).', 'error');
+                }
+            } catch(err) {
+                sysAlert('Format Barcode pesanan pelanggan tidak valid.', 'error');
+            }
+        }
+
 
         /* =========================================
            PRODUCT & STOCK MANAGEMENT
@@ -794,6 +902,8 @@
         function printReportPDF() { document.body.classList.add('print-mode-report'); window.print(); document.body.classList.remove('print-mode-report'); }
 
         function saveSettings() { config.taxRate = parseFloat(document.getElementById('setting-tax').value) || 0; localStorage.setItem('pos_config', JSON.stringify(config)); sysAlert("Pengaturan disimpan.", "success"); startApp(); }
+        
+        // Hapus Data
         function resetApp() { localStorage.clear(); location.reload(); }
 
         /* =========================================
@@ -841,7 +951,7 @@
         document.addEventListener('keydown', (e) => {
             if(e.key === 'F2') { e.preventDefault(); document.getElementById('pos-search').focus(); }
             if(e.key === 'F4') { e.preventDefault(); clearCart(); }
-            if(e.key === 'F9') { e.preventDefault(); if(document.getElementById('view-kasir').classList.contains('active')) checkout(); }
+            if(e.key === 'F9') { e.preventDefault(); if(document.getElementById('view-kasir').classList.contains('active')) openPaymentModal(); }
         });
     </script>
 </body>
