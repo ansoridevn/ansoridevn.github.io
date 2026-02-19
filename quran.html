@@ -469,6 +469,109 @@
             id: { appTitle: "Al-Quran", searchPlaceholder: "Cari Surah...", lastRead: "Terakhir Dibaca", selectSurah: "Pilih Surah", savedTitle: "Tersimpan!", savedMsg: "Surah {s}, Ayat {a} tersimpan.", continueBtn: "Lanjutkan Membaca" }
         };
 
+        // --- FUNGSI TRANSLITERASI KEMENAG ---
+        // --- FUNGSI TRANSLITERASI KEMENAG (REVISI TANDA BACA) ---
+        function transliterasiKemenag(arabicText) {
+            const konsonanMap = {
+                'ء': '\'', 'ب': 'b', 'ت': 't', 'ث': 'ṡ', 'ج': 'j', 'ح': 'ḥ', 'خ': 'kh',
+                'د': 'd', 'ذ': 'ż', 'ر': 'r', 'ز': 'z', 'س': 's', 'ش': 'sy', 'ص': 'ṣ',
+                'ض': 'ḍ', 'ط': 'ṭ', 'ظ': 'ẓ', 'ع': '‘', 'غ': 'g', 'ف': 'f', 'ق': 'q',
+                'ك': 'k', 'ل': 'l', 'م': 'm', 'ن': 'n', 'ه': 'h', 'و': 'w', 'ي': 'y',
+                'ة': 't', 'ٱ': 'a' 
+            };
+
+            // 1. Peta Tanda Waqaf menjadi Koma / Titik
+            const waqafToPunctuation = {
+                'ۖ': ',',  // Waqaf washal awla
+                'ۗ': ',',  // Waqaf waqfu awla
+                'ۚ': ',',  // Waqaf jaiz
+                'ۛ': ',',  // Waqaf mu'anaqah
+                'ۘ': '.',  // Waqaf lazim (harus berhenti)
+                '،': ',',  // Koma Arab
+                '؟': '?'   // Tanda tanya Arab
+            };
+
+            // Tanda tajwid ekstra yang tetap harus dihapus (tidak butuh tanda baca)
+            const ignoredMarks = ['ۙ', '۩', '۞', '۟', '۠', 'ۢ', 'ۣ', 'ۤ', 'ۥ', 'ۦ', 'ۧ', 'ۨ', '۪', '۫', '۬', 'ۭ'];
+            
+            let text = arabicText;
+            ignoredMarks.forEach(mark => text = text.split(mark).join(''));
+
+            text = text.replace(/اللَّهِ/g, 'llāhi');
+            text = text.replace(/اللَّهُ/g, 'llāhu');
+            text = text.replace(/اللَّهَ/g, 'llāha');
+            
+            const syamsiyahRegex = /(?:^|\s)[اٱ][لْ]*([تثدذرْزسشصضطظلن])([\u064E\u0650\u064F\u0651])/g;
+            text = text.replace(syamsiyahRegex, function(match, huruf, harakat) {
+                let latinChar = konsonanMap[huruf];
+                return ' a' + latinChar + '-' + latinChar + harakat; 
+            });
+
+            const qamariyahRegex = /(?:^|\s)[اٱ][لْ]*([ءبجحخعغفقكمهوي])/g;
+            text = text.replace(qamariyahRegex, function(match, huruf) {
+                return ' al-' + huruf;
+            });
+
+            let result = '';
+            const tasydid = '\u0651';
+
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+
+                // 2. Jika karakter adalah tanda waqaf, ubah jadi koma/titik
+                if (waqafToPunctuation[char]) {
+                    result += waqafToPunctuation[char] + ' ';
+                    continue;
+                }
+
+                if (char === 'و' && text[i - 1] === '\u064F') { result = result.slice(0, -1) + 'ū'; continue; }
+                if (char === 'ي' && text[i - 1] === '\u0650') { result = result.slice(0, -1) + 'ī'; continue; }
+                if (char === 'ا' && text[i - 1] === '\u064E') { result = result.slice(0, -1) + 'ā'; continue; }
+                if (char === '\u0670') { result += 'ā'; continue; } 
+
+                if (char === 'ا' && !['\u064E','\u064B','\u064C','\u064D'].includes(text[i-1]) && i !== 0) continue;
+
+                if (char === tasydid && result.length > 0) {
+                    let lastChar = result.charAt(result.length - 1);
+                    if (/[a-zA-Zṡḥżṣḍṭẓ]/.test(lastChar)) result += lastChar;
+                    continue;
+                }
+
+                if (char === '\u064E') { result += 'a'; }
+                else if (char === '\u0650') { result += 'i'; }
+                else if (char === '\u064F') { result += 'u'; }
+                else if (char === '\u064B') { result += 'an'; }
+                else if (char === '\u064D') { result += 'in'; }
+                else if (char === '\u064C') { result += 'un'; }
+                else if (char === '\u0652') { result += ''; }
+                else if (konsonanMap[char]) { result += konsonanMap[char]; } 
+                else { 
+                    if (!/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(char)) {
+                        result += char;
+                    }
+                }
+            }
+            
+            // 3. Merapikan spasi sebelum tanda baca (contoh: "kata , kata" -> "kata, kata")
+            let finalStr = result.replace(/\s+/g, ' ').trim().toLowerCase();
+            finalStr = finalStr.replace(/\s+([,.?])/g, '$1');
+
+            // Kapitalisasi awal kalimat
+            finalStr = finalStr.charAt(0).toUpperCase() + finalStr.slice(1);
+            
+            // 4. Memastikan akhir ayat ditutup dengan titik
+            if (finalStr.endsWith(',')) {
+                // Jika teks berakhir dengan koma (karena ada waqaf di akhir), ganti jadi titik
+                finalStr = finalStr.slice(0, -1) + '.';
+            } else if (!/[.?]$/.test(finalStr)) {
+                // Jika belum ada titik sama sekali di akhir, tambahkan titik
+                finalStr += '.';
+            }
+
+            return finalStr;
+        }
+        // ------------------------------------------
+
         // --- INIT & SPLASH ---
         window.addEventListener('load', () => { 
             initLocationAndPrayer();
@@ -727,9 +830,11 @@
                 // Logic to remove Bismillah from Ayah 1 of all Surahs (except Al-Fatihah)
                 let arabicText = ayah.text;
                 if (currentSurahMeta.number !== 1 && ayah.numberInSurah === 1) {
-                    // Strip exactly "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ" and any trailing space
-                    arabicText = arabicText.replace(/^بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ\s?/g, '');
+                    arabicText = arabicText.replace(/^بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ\s?/g, '');
                 }
+
+                // LOGIKA INJEKSI TRANSLITERASI: Jika ID pakai script kita, jika EN pakai data API.
+                let displayLatin = currentLang === 'id' ? transliterasiKemenag(arabicText) : latin[index].text;
 
                 html += `
                     <div class="ayah-card" id="ayah-${ayah.numberInSurah}">
@@ -741,7 +846,7 @@
                             </div>
                         </div>
                         <div class="ayah-arabic">${arabicText}</div>
-                        <div class="ayah-latin">${latin[index].text}</div>
+                        <div class="ayah-latin">${displayLatin}</div>
                         <div class="ayah-trans">${trans[index].text}</div>
                     </div>
                 `;
