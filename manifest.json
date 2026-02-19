@@ -1,0 +1,17 @@
+{
+  "name": "Ansori POS Pro",
+  "short_name": "POS",
+  "description": "Sistem Kasir Offline UMKM",
+  "start_url": "pos.html",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#0F172A",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2434/2434440.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
