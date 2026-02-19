@@ -18,6 +18,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://unpkg.com/adhan@4.4.1/lib/Adhan.js"></script>
 
     <style>
         :root {
@@ -31,8 +33,7 @@
             --border: #E7E5E4;
             --font-ui: 'Plus Jakarta Sans', sans-serif;
             --font-ar: 'Amiri', serif;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --modal-bg: rgba(0, 0, 0, 0.5);
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
         }
@@ -55,7 +56,7 @@
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            z-index: 20;
+            z-index: 30;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             padding-top: var(--safe-top);
             position: relative; 
@@ -65,69 +66,41 @@
             padding: 20px;
             border-bottom: 1px solid var(--border);
             background: var(--bg-surface);
-            position: relative;
         }
 
-        .app-title { font-weight: 700; font-size: 1.4rem; color: var(--primary); display: flex; align-items: center; gap: 10px; margin-bottom: 15px;}
+        .app-title { font-weight: 700; font-size: 1.4rem; color: var(--primary); display: flex; align-items: center; gap: 10px; margin-bottom: 20px;}
         
-        /* Close Button (Mobile Only) */
         .close-sidebar-btn {
             display: none;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--bg-base);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            cursor: pointer;
+            position: absolute; top: 20px; right: 20px;
+            background: var(--bg-base); width: 36px; height: 36px;
+            border-radius: 50%; align-items: center; justify-content: center;
+            color: var(--text-muted); font-size: 1.1rem; cursor: pointer;
             border: 1px solid var(--border);
         }
 
-        /* Time & Prayer Widget */
+        /* Widgets */
+        .widget-label { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; letter-spacing: 0.5px; font-weight: 700; }
+        
         .time-widget {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            background: var(--bg-base);
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
+            background: var(--bg-base); padding: 12px; border-radius: 12px; border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;
         }
-        .time-now { font-weight: 700; color: var(--text-main); }
+        .time-now { font-weight: 700; color: var(--text-main); font-size: 1.1rem; }
         .prayer-badge { 
-            font-size: 0.7rem; background: var(--primary-soft); color: var(--primary); 
-            padding: 2px 6px; border-radius: 4px; font-weight: 600; text-transform: uppercase;
+            font-size: 0.75rem; background: var(--primary-soft); color: var(--primary); 
+            padding: 4px 8px; border-radius: 6px; font-weight: 700;
         }
 
-        /* Location Widget (Separate) */
         .location-widget {
-            font-size: 0.75rem;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 600;
-            padding: 4px 2px;
+            background: #F0FDF4; padding: 12px; border-radius: 12px; border: 1px solid var(--primary-soft);
+            display: flex; align-items: center; gap: 10px; color: var(--primary); margin-bottom: 15px;
         }
+        .location-text { font-size: 0.85rem; font-weight: 600; }
 
         #last-read-card {
-            margin-top: 15px;
-            background: var(--primary);
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            cursor: pointer;
-            display: none;
-            transition: 0.2s;
-            box-shadow: var(--shadow);
+            background: var(--primary); color: white; padding: 15px;
+            border-radius: 12px; cursor: pointer; display: none; transition: 0.2s; box-shadow: var(--shadow);
         }
         #last-read-card:active { transform: scale(0.98); }
         .lr-label { font-size: 0.7rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -170,43 +143,45 @@
         .toggle-menu { display: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); padding: 5px; }
         .surah-title { font-weight: 700; font-size: 1.1rem; }
 
-        /* Mobile Clock */
         .mobile-clock {
-            display: none; 
-            font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
+            display: none; font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
             background: var(--bg-surface); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border);
-            margin-right: 10px;
-            align-items: center; gap: 6px;
+            margin-right: 10px; align-items: center; gap: 6px;
         }
         .mobile-clock span { color: var(--text-main); font-weight: 700; }
 
-        /* Language Toggle */
-        .lang-switch {
-            display: flex; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--bg-surface);
-        }
+        .lang-switch { display: flex; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--bg-surface); }
         .lang-btn {
             background: transparent; border: none; padding: 6px 12px; 
-            font-size: 0.75rem; font-weight: 700; cursor: pointer; color: var(--text-muted);
-            transition: 0.2s;
+            font-size: 0.75rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: 0.2s;
         }
         .lang-btn.active { background: var(--text-main); color: white; }
 
-        #reader { flex: 1; overflow-y: auto; padding: 20px; scroll-behavior: smooth; padding-bottom: calc(100px + var(--safe-bottom)); }
+        .qibla-btn {
+            background: var(--bg-surface); border: 1px solid var(--border); color: var(--accent);
+            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; margin-right: 10px; transition: 0.2s;
+        }
+        .qibla-btn:active { transform: scale(0.9); background: var(--accent); color: white; }
+
+        /* Reader Area */
+        #reader { 
+            flex: 1; overflow-y: auto; 
+            padding: 20px; padding-bottom: 100px; /* Space for footer */
+            scroll-behavior: smooth; 
+        }
         
         .bismillah {
             text-align: center; font-family: var(--font-ar); font-size: 2.2rem;
             color: var(--text-main); margin: 30px 0 50px 0; display: none;
         }
 
-        /* Ayah Card */
         .ayah-card {
             background: var(--bg-surface); border-bottom: 1px solid var(--border);
-            padding: 35px 15px; transition: background 0.3s;
-            border-radius: 0;
+            padding: 35px 15px; transition: background 0.3s; border-radius: 0;
         }
         .ayah-card:first-child { border-top-left-radius: 12px; border-top-right-radius: 12px; }
         .ayah-card:last-child { border-bottom: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
-
         .ayah-card.playing { background: var(--primary-soft); }
 
         .ayah-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
@@ -222,20 +197,39 @@
             text-align: right; font-family: var(--font-ar); font-size: 2.4rem;
             line-height: 2.4; color: #000; margin-bottom: 15px; direction: rtl;
         }
-        
         .ayah-latin {
-            text-align: left; font-size: 0.95rem; color: var(--accent);
-            margin-bottom: 10px; font-style: italic; line-height: 1.5; font-weight: 500;
+            text-align: left; font-size: 1rem; color: var(--accent);
+            margin-bottom: 10px; font-family: 'Times New Roman', serif; font-style: italic; line-height: 1.5; font-weight: 500;
         }
-
         .ayah-trans { font-size: 1rem; color: var(--text-muted); line-height: 1.6; }
 
         .loader { display: flex; justify-content: center; align-items: center; height: 100%; color: var(--primary); font-size: 1.5rem; flex-direction: column; gap: 15px; }
         
-        /* --- MODAL --- */
+        /* Empty State */
+        #empty-state { text-align: center; margin-top: 5vh; color: var(--text-muted); padding: 0 20px; max-width: 500px; margin-left: auto; margin-right: auto; }
+        .prayer-table { width: 100%; margin-top: 30px; background: var(--bg-surface); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+        .prayer-row { display: flex; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        .prayer-row:last-child { border-bottom: none; }
+        .prayer-row.highlight { background: var(--primary-soft); color: var(--primary); font-weight: 700; }
+
+        /* Floating Footer */
+        .reader-footer {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border);
+            padding: 12px; padding-bottom: calc(12px + var(--safe-bottom));
+            text-align: center; font-size: 0.85rem; color: var(--text-muted);
+            z-index: 20;
+            display: none; /* Hidden by default until content loads */
+        }
+        .reader-footer a { color: var(--text-main); font-weight: 700; text-decoration: none; }
+        .reader-footer i { color: #ef4444; margin: 0 4px; }
+
+        /* --- MODALS --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--modal-bg); z-index: 100; opacity: 0; visibility: hidden;
+            background: rgba(0, 0, 0, 0.6); z-index: 100; opacity: 0; visibility: hidden;
             display: flex; align-items: center; justify-content: center;
             transition: 0.3s ease; backdrop-filter: blur(4px);
         }
@@ -245,9 +239,10 @@
             background: white; width: 85%; max-width: 320px; padding: 30px;
             border-radius: 24px; text-align: center; transform: translateY(20px);
             transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); position: relative;
         }
         .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-close-icon { position: absolute; top: 15px; right: 15px; cursor: pointer; color: var(--text-muted); font-size: 1.2rem; }
         
         .modal-icon {
             width: 60px; height: 60px; background: var(--primary-soft); color: var(--primary);
@@ -263,18 +258,27 @@
         }
         .modal-btn:active { transform: scale(0.98); }
 
-        /* Mobile Responsive */
+        /* Compass */
+        .compass-container { position: relative; width: 200px; height: 200px; margin: 20px auto; }
+        .compass-disc { width: 100%; height: 100%; border-radius: 50%; background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Compass_Rose_English_North.svg/1024px-Compass_Rose_English_North.svg.png') no-repeat center center; background-size: cover; transition: transform 0.1s ease-out; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .kaaba-pointer { 
+            position: absolute; top: 50%; left: 50%; width: 4px; height: 90px; 
+            background: var(--accent); transform-origin: bottom center; 
+            transform: translate(-50%, -100%) rotate(0deg); z-index: 5; border-radius: 4px;
+        }
+        .kaaba-pointer::after {
+            content: ''; position: absolute; top: -10px; left: -6px; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 16px solid var(--accent);
+        }
+
         @media (max-width: 900px) {
             aside { position: absolute; height: 100%; transform: translateX(-100%); box-shadow: 5px 0 15px rgba(0,0,0,0.1); width: 85%; max-width: 320px; }
             aside.open { transform: translateX(0); }
             .toggle-menu { display: block; }
-            .close-sidebar-btn { display: flex; } /* Show close button */
+            .close-sidebar-btn { display: flex; }
             .ayah-arabic { font-size: 2rem; }
-            
             .time-widget { display: none; } 
-            .location-widget { display: none; } /* Hide sidebar loc on mobile, space is tight */
+            .location-widget { display: none; }
             .mobile-clock { display: flex; }
-            
             .surah-title { font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
         }
     </style>
@@ -283,14 +287,12 @@
 
     <aside id="sidebar">
         <div class="sidebar-header">
-            <div class="close-sidebar-btn" onclick="toggleSidebar()">
-                <i class="fas fa-times"></i>
-            </div>
-
+            <div class="close-sidebar-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
             <div class="app-title">
-                <i class="fas fa-book-quran"></i> <span data-i18n="appTitle">Quran</span>
+                <i class="fas fa-quran"></i> <span data-i18n="appTitle">Quran</span>
             </div>
             
+            <div class="widget-label">Time & Prayer</div>
             <div class="time-widget">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <i class="fas fa-clock" style="color:var(--text-muted);"></i>
@@ -299,9 +301,10 @@
                 <div class="prayer-badge" id="prayer-desktop">...</div>
             </div>
 
+            <div class="widget-label">Location</div>
             <div class="location-widget">
                 <i class="fas fa-map-marker-alt"></i>
-                <span id="user-location">Detecting...</span>
+                <span id="user-location" class="location-text">Detecting...</span>
             </div>
 
             <div id="last-read-card" onclick="loadLastRead()">
@@ -314,8 +317,7 @@
             <input type="text" id="search" class="search-input" placeholder="Search Surah..." onkeyup="filterSurahs()">
         </div>
 
-        <div class="surah-list" id="surah-list-container">
-            </div>
+        <div class="surah-list" id="surah-list-container"></div>
     </aside>
 
     <main>
@@ -325,12 +327,16 @@
                 <h3 class="surah-title" id="header-title" data-i18n="selectSurah">Select Surah</h3>
             </div>
             
-            <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="display: flex; gap: 8px; align-items: center;">
                 <div class="mobile-clock">
                     <span class="clock-display">--:--</span>
                     <div style="width:1px; height:12px; background:var(--border);"></div>
                     <span id="prayer-mobile" style="color:var(--primary); font-size:0.7rem;">...</span>
                 </div>
+
+                <button class="qibla-btn" onclick="openQibla()" title="Qibla Finder">
+                    <i class="far fa-compass"></i>
+                </button>
 
                 <div id="audio-status" style="font-size:0.8rem; color:var(--primary); font-weight:700; display:none;">
                     <i class="fas fa-volume-up"></i>
@@ -349,18 +355,27 @@
                 <span style="font-size:0.9rem; color:var(--text-muted);">Fetching Data...</span>
             </div>
             
-            <div id="empty-state" style="text-align:center; margin-top:15vh; color:var(--text-muted); padding: 0 20px;">
-                <i class="fas fa-book-open" style="font-size:4rem; color:var(--border); margin-bottom:20px;"></i>
-                <p data-i18n="emptyState">Select a Surah to begin<br>or continue reading.</p>
+            <div id="empty-state">
+                <i class="fas fa-mosque" style="font-size:3rem; color:var(--primary); opacity:0.3; margin-bottom:20px;"></i>
+                <h2 style="font-size:1.5rem; margin-bottom:10px;">Jadwal Sholat</h2>
+                <p id="prayer-loc-display" style="font-size:0.9rem; margin-bottom:20px;">Loading Location...</p>
+                <div class="prayer-table" id="prayer-table-body">
+                    <div style="padding:20px;">Loading times...</div>
+                </div>
             </div>
 
             <div class="bismillah" id="bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
             <div id="ayah-container"></div>
         </div>
+
+        <div class="reader-footer" id="app-footer">
+            Built with <i class="fas fa-heart"></i> by <a href="https://ahmadansori.com" target="_blank">Ahmad Ansori</a>
+        </div>
     </main>
 
     <div class="modal-overlay" id="save-modal" onclick="closeModal(event)">
         <div class="modal-content">
+            <div class="modal-close-icon" onclick="document.getElementById('save-modal').classList.remove('active')"><i class="fas fa-times"></i></div>
             <div class="modal-icon"><i class="fas fa-check"></i></div>
             <h3 class="modal-title" data-i18n="savedTitle">Saved!</h3>
             <p class="modal-text" id="modal-msg">Progress saved.</p>
@@ -368,44 +383,44 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="qibla-modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <div class="modal-close-icon" onclick="document.getElementById('qibla-modal').classList.remove('active')"><i class="fas fa-times"></i></div>
+            <h3 class="modal-title">Qibla Finder</h3>
+            <p class="modal-text" style="margin-bottom:10px;">Align the needle to face the Kaaba.</p>
+            
+            <div class="compass-container">
+                <div class="compass-disc" id="compass-disc"></div>
+                <div class="kaaba-pointer" id="kaaba-pointer"></div>
+            </div>
+
+            <button class="modal-btn" id="start-compass-btn" onclick="initCompass()">Start Compass</button>
+            <div id="compass-status" style="font-size:0.8rem; color:var(--text-muted); margin-top:10px;">Requires device sensors</div>
+        </div>
+    </div>
+
     <audio id="quran-audio"></audio>
 
     <script>
-        // --- INDONESIAN SURAH NAMES ---
         const surahID = ["Pembukaan", "Sapi Betina", "Keluarga Imran", "Wanita", "Hidangan", "Binatang Ternak", "Tempat Tertinggi", "Harta Rampasan Perang", "Pengampunan", "Yunus", "Hud", "Yusuf", "Guruh", "Ibrahim", "Hijr", "Lebah", "Perjalanan Malam", "Gua", "Maryam", "Thaha", "Para Nabi", "Haji", "Orang-Orang Mukmin", "Cahaya", "Pembeda", "Para Penyair", "Semut", "Kisah-Kisah", "Laba-Laba", "Romawi", "Luqman", "Sajdah", "Golongan Bersekutu", "Saba'", "Pencipta", "Yasin", "Barisan-Barisan", "Sad", "Rombongan", "Orang Beriman", "Yang Dijelaskan", "Musyawarah", "Perhiasan", "Kabut", "Yang Berlutut", "Bukit Pasir", "Muhammad", "Kemenangan", "Kamar-Kamar", "Qaf", "Angin yang Menerbangkan", "Bukit", "Bintang", "Bulan", "Yang Maha Pemurah", "Hari Kiamat", "Besi", "Wanita yang Menggugat", "Pengusiran", "Wanita yang Diuji", "Barisan", "Jumat", "Orang-Orang Munafik", "Hari Dinampakkan Kesalahan", "Talak", "Pengharaman", "Kerajaan", "Pena", "Hari Kiamat", "Tempat-Tempat Naik", "Nuh", "Jin", "Orang yang Berselimut", "Orang yang Berkemul", "Hari Kiamat", "Manusia", "Malaikat-Malaikat", "Berita Besar", "Malaikat Pencabut", "Bermuka Masam", "Penggulungan", "Terbelah", "Orang-Orang Curang", "Terbelah", "Gugusan Bintang", "Yang Datang di Malam Hari", "Yang Paling Tinggi", "Hari Pembalasan", "Fajar", "Negeri", "Matahari", "Malam", "Waktu Duha", "Kelapangan", "Buah Tin", "Segumpal Darah", "Kemuliaan", "Bukti", "Kegoncangan", "Kuda Perang", "Hari Kiamat", "Bermegah-Megahan", "Masa", "Pengumpat", "Gajah", "Quraisy", "Barang-Barang Berguna", "Nikmat yang Banyak", "Orang-Orang Kafir", "Pertolongan", "Gejolak Api", "Ikhlas", "Waktu Subuh", "Manusia"];
 
-        // --- CONFIG ---
         const API_BASE = "https://api.alquran.cloud/v1";
         const PRAYER_API = "https://api.aladhan.com/v1/timings";
         let allSurahs = [];
         let currentSurahMeta = null;
         let currentLang = localStorage.getItem('quran_lang') || 'en';
         let prayerTimings = null;
+        let userCoords = { lat: -6.2, lng: 106.8 };
 
         const i18n = {
             en: {
-                appTitle: "Quran",
-                searchPlaceholder: "Search Surah...",
-                lastRead: "Last Reading",
-                selectSurah: "Select Surah",
-                emptyState: "Select a Surah to begin<br>or continue reading.",
-                savedTitle: "Saved!",
-                savedMsg: "Surah {s}, Ayah {a} has been saved.",
-                continueBtn: "Continue Reading"
+                appTitle: "Quran", searchPlaceholder: "Search Surah...", lastRead: "Last Reading", selectSurah: "Select Surah", savedTitle: "Saved!", savedMsg: "Surah {s}, Ayah {a} saved.", continueBtn: "Continue Reading"
             },
             id: {
-                appTitle: "Al-Quran",
-                searchPlaceholder: "Cari Surah...",
-                lastRead: "Terakhir Dibaca",
-                selectSurah: "Pilih Surah",
-                emptyState: "Pilih Surah untuk mulai<br>atau lanjutkan bacaan.",
-                savedTitle: "Tersimpan!",
-                savedMsg: "Surah {s}, Ayat {a} berhasil disimpan.",
-                continueBtn: "Lanjutkan Membaca"
+                appTitle: "Al-Quran", searchPlaceholder: "Cari Surah...", lastRead: "Terakhir Dibaca", selectSurah: "Pilih Surah", savedTitle: "Tersimpan!", savedMsg: "Surah {s}, Ayat {a} tersimpan.", continueBtn: "Lanjutkan Membaca"
             }
         };
 
-        // --- INIT ---
         window.addEventListener('load', () => { 
             initLocationAndPrayer();
             updateLangUI();
@@ -421,12 +436,12 @@
             renderSurahList(allSurahs); 
             if(currentSurahMeta) loadSurah(currentSurahMeta.number);
             checkLastRead();
+            updatePrayerTable();
         }
 
         function updateLangUI() {
             document.getElementById('btn-id').className = `lang-btn ${currentLang === 'id' ? 'active' : ''}`;
             document.getElementById('btn-en').className = `lang-btn ${currentLang === 'en' ? 'active' : ''}`;
-            
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(i18n[currentLang][key]) el.innerHTML = i18n[currentLang][key];
@@ -434,19 +449,17 @@
             document.getElementById('search').placeholder = i18n[currentLang].searchPlaceholder;
         }
 
-        // --- LOCATION & PRAYER API LOGIC ---
         async function initLocationAndPrayer() {
             startClock(); 
             try {
-                // Get Location (IP Based)
                 const locRes = await fetch('https://ipinfo.io/json');
                 const locData = await locRes.json();
                 const [lat, lng] = locData.loc.split(',');
-
-                // Update Location Widget
+                userCoords = { lat: parseFloat(lat), lng: parseFloat(lng) };
+                
                 document.getElementById('user-location').innerText = `${locData.city}, ${locData.country}`;
+                document.getElementById('prayer-loc-display').innerText = `${locData.city}, ${locData.country}`;
 
-                // Get Prayer Times (Aladhan API)
                 const date = Math.floor(Date.now() / 1000);
                 const prayerUrl = `${PRAYER_API}/${date}?latitude=${lat}&longitude=${lng}&method=2`;
                 
@@ -455,13 +468,15 @@
                 
                 prayerTimings = pData.data.timings;
                 updatePrayerDisplay();
+                updatePrayerTable();
 
             } catch (e) {
-                console.log("Prayer Fetch Failed, using Fallback (Jakarta)");
+                console.log("Loc Failed");
                 document.getElementById('user-location').innerText = "Jakarta (Fallback)";
-                // Fallback Prayer Times (Jakarta approximate)
+                document.getElementById('prayer-loc-display').innerText = "Jakarta (Fallback)";
                 prayerTimings = { Fajr: "04:40", Dhuhr: "12:00", Asr: "15:15", Maghrib: "18:05", Isha: "19:15" };
                 updatePrayerDisplay();
+                updatePrayerTable();
             }
         }
 
@@ -470,18 +485,14 @@
                 const now = new Date();
                 const timeString = now.toLocaleTimeString(currentLang === 'id' ? 'id-ID' : 'en-US', { hour: '2-digit', minute: '2-digit' });
                 document.querySelectorAll('.clock-display').forEach(el => el.innerText = timeString);
-                
                 if(prayerTimings) updatePrayerDisplay(); 
             }, 1000);
         }
 
         function updatePrayerDisplay() {
             if(!prayerTimings) return;
-
             const now = new Date();
             const curTime = now.getHours() * 60 + now.getMinutes();
-            
-            // Helper to parse "HH:MM" to minutes
             const toMins = (t) => parseInt(t.split(':')[0])*60 + parseInt(t.split(':')[1]);
 
             const prayers = [
@@ -492,20 +503,77 @@
                 { name: "Isya", time: toMins(prayerTimings.Isha) }
             ];
 
-            // Find current active prayer
-            let current = prayers[prayers.length - 1].name; // Default to Isha (late night)
-            
+            let current = "Isya (Late)";
             for(let i = 0; i < prayers.length; i++) {
-                if(curTime >= prayers[i].time) {
-                    current = prayers[i].name;
-                }
+                if(curTime >= prayers[i].time) current = prayers[i].name;
             }
-
             document.getElementById('prayer-desktop').innerText = current;
             document.getElementById('prayer-mobile').innerText = current;
         }
 
-        // --- DATA ---
+        function updatePrayerTable() {
+            if(!prayerTimings) return;
+            const list = [
+                { id: "Subuh", en: "Fajr", t: prayerTimings.Fajr },
+                { id: "Dzuhur", en: "Dhuhr", t: prayerTimings.Dhuhr },
+                { id: "Ashar", en: "Asr", t: prayerTimings.Asr },
+                { id: "Maghrib", en: "Maghrib", t: prayerTimings.Maghrib },
+                { id: "Isya", en: "Isha", t: prayerTimings.Isha },
+            ];
+            
+            const now = new Date();
+            const curTime = now.getHours() * 60 + now.getMinutes();
+            const toMins = (t) => parseInt(t.split(':')[0])*60 + parseInt(t.split(':')[1]);
+
+            let html = "";
+            let activeIdx = -1;
+            for(let i=0; i<list.length; i++) { if(curTime >= toMins(list[i].t)) activeIdx = i; }
+
+            list.forEach((p, idx) => {
+                const name = currentLang === 'id' ? p.id : p.en;
+                const activeClass = (idx === activeIdx) ? 'highlight' : '';
+                html += `<div class="prayer-row ${activeClass}"><span>${name}</span><span>${p.t}</span></div>`;
+            });
+            document.getElementById('prayer-table-body').innerHTML = html;
+        }
+
+        function openQibla() { document.getElementById('qibla-modal').classList.add('active'); }
+        
+        function initCompass() {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation);
+                            document.getElementById('start-compass-btn').style.display = 'none';
+                            document.getElementById('compass-status').innerText = "Compass Active";
+                        } else { alert('Permission denied'); }
+                    })
+                    .catch(console.error);
+            } else {
+                window.addEventListener('deviceorientation', handleOrientation);
+                document.getElementById('start-compass-btn').style.display = 'none';
+                document.getElementById('compass-status').innerText = "Compass Active";
+            }
+        }
+
+        function handleOrientation(e) {
+            const qibla = calculateQibla(userCoords.lat, userCoords.lng);
+            let heading = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+            document.getElementById('compass-disc').style.transform = `rotate(${-heading}deg)`;
+            document.getElementById('kaaba-pointer').style.transform = `translate(-50%, -100%) rotate(${qibla}deg)`;
+        }
+
+        function calculateQibla(lat, lng) {
+            const PI = Math.PI;
+            const latk = 21.4225 * PI / 180.0;
+            const longk = 39.8262 * PI / 180.0;
+            const phi = lat * PI / 180.0;
+            const lambda = lng * PI / 180.0;
+            const q = Math.atan2(Math.sin(longk - lambda), Math.cos(phi) * Math.tan(latk) - Math.sin(phi) * Math.cos(longk - lambda));
+            return q * 180.0 / PI; 
+        }
+
         async function fetchSurahList() {
             try {
                 const res = await fetch(`${API_BASE}/surah`);
@@ -522,17 +590,12 @@
             container.innerHTML = list.map(surah => {
                 let displayName = surah.englishName;
                 let displayMean = surah.englishNameTranslation;
-                if (currentLang === 'id') {
-                    displayMean = surahID[surah.number - 1] || surah.englishNameTranslation;
-                }
+                if (currentLang === 'id') displayMean = surahID[surah.number - 1] || surah.englishNameTranslation;
                 return `
                 <div class="surah-item" id="surah-item-${surah.number}" onclick="loadSurah(${surah.number})">
                     <div style="display:flex; align-items:center;">
                         <div class="s-num">${surah.number}</div>
-                        <div class="s-info">
-                            <h4>${displayName}</h4>
-                            <span>${displayMean}</span>
-                        </div>
+                        <div class="s-info"><h4>${displayName}</h4><span>${displayMean}</span></div>
                     </div>
                     <div class="s-arabic">${surah.name.replace('سُورَةُ ', '')}</div>
                 </div>
@@ -544,7 +607,8 @@
             document.getElementById('loader').style.display = 'flex';
             document.getElementById('ayah-container').innerHTML = '';
             document.getElementById('bismillah').style.display = 'none';
-            if(window.innerWidth <= 900) toggleSidebar();
+            document.getElementById('app-footer').style.display = 'none';
+            if(window.innerWidth <= 900) document.getElementById('sidebar').classList.remove('open');
 
             document.querySelectorAll('.surah-item').forEach(el => el.classList.remove('active'));
             const activeItem = document.getElementById(`surah-item-${number}`);
@@ -563,12 +627,11 @@
                 currentSurahMeta = arabicData;
                 document.getElementById('header-title').innerText = `${arabicData.number}. ${arabicData.englishName}`;
 
-                if (number !== 9 && number !== 1) {
-                    document.getElementById('bismillah').style.display = 'block';
-                }
+                if (number !== 9 && number !== 1) document.getElementById('bismillah').style.display = 'block';
 
                 renderAyahs(arabicData.ayahs, latinData.ayahs, transData.ayahs);
                 document.getElementById('loader').style.display = 'none';
+                document.getElementById('app-footer').style.display = 'block';
             } catch (err) {
                 document.getElementById('loader').innerHTML = `<div style="text-align:center"><button onclick="loadSurah(${number})">Retry</button></div>`;
             }
@@ -600,16 +663,11 @@
         let currentBtn = null;
         function playAudio(globalAyahId, btn) {
             const url = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalAyahId}.mp3`;
-            if(currentBtn === btn && !audioPlayer.paused) {
-                audioPlayer.pause();
-                resetBtn(btn);
-                return;
-            }
+            if(currentBtn === btn && !audioPlayer.paused) { audioPlayer.pause(); resetBtn(btn); return; }
             if(currentBtn) resetBtn(currentBtn);
             currentBtn = btn;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            audioPlayer.src = url;
-            audioPlayer.play();
+            audioPlayer.src = url; audioPlayer.play();
             document.getElementById('audio-status').style.display = 'block';
             audioPlayer.onplaying = () => { btn.innerHTML = '<i class="fas fa-pause"></i>'; btn.closest('.ayah-card').classList.add('playing'); };
             audioPlayer.onended = () => { resetBtn(btn); document.getElementById('audio-status').style.display = 'none'; };
@@ -650,7 +708,7 @@
             }
         }
 
-        function closeModal(e) { if(e.target.id === 'save-modal') e.target.classList.remove('active'); }
+        function closeModal(e) { if(e.target.id === 'save-modal' || e.target.id === 'qibla-modal') e.target.classList.remove('active'); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
         function filterSurahs() {
             const query = document.getElementById('search').value.toLowerCase();
