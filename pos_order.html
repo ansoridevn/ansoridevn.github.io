@@ -34,7 +34,7 @@
             color: var(--text-main);
             display: flex;
             flex-direction: column;
-            height: 100dvh; /* Menggunakan 100dvh untuk mobile browser */
+            height: 100dvh; 
             overflow: hidden; 
         }
 
@@ -57,7 +57,7 @@
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            padding-bottom: 120px; /* Space for floating cart */
+            padding-bottom: 120px; 
         }
 
         /* --- MENU ITEM CARDS --- */
@@ -67,14 +67,18 @@
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: block; /* Diubah dari flex untuk support input note di bawahnya */
             box-shadow: var(--shadow-sm);
             transition: 0.2s ease;
         }
-        .menu-item:active { transform: scale(0.98); border-color: var(--accent); }
+        .menu-item:active { border-color: var(--accent); }
         
+        .item-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .item-info { flex: 1; padding-right: 15px; }
         .item-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; line-height: 1.3; }
         .item-price { color: var(--success); font-weight: 700; font-size: 0.95rem; }
@@ -87,6 +91,26 @@
             padding: 2px 8px;
             border-radius: 4px;
             font-weight: 600;
+        }
+
+        /* Input Catatan (Sembunyi secara default) */
+        .item-note-input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 12px;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background: var(--bg-base);
+            display: none; /* Ditampilkan via JS saat Qty > 0 */
+            outline: none;
+            transition: 0.2s;
+            color: var(--text-main);
+        }
+        .item-note-input:focus {
+            border-style: solid;
+            border-color: var(--accent);
+            background: white;
         }
         
         /* Add Button & Qty Control */
@@ -104,7 +128,7 @@
         .btn-add:active { background: var(--accent); color: white; }
         
         .qty-control {
-            display: none; /* Shown when qty > 0 */
+            display: none; 
             align-items: center; 
             background: white;
             border: 1.5px solid var(--accent); 
@@ -136,7 +160,7 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            pointer-events: none; /* Let clicks pass through empty space */
+            pointer-events: none; 
             z-index: 20;
         }
 
@@ -148,7 +172,7 @@
             box-shadow: var(--shadow-float);
             display: flex; justify-content: space-between; align-items: center;
             transform: translateY(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: auto; /* Re-enable clicks on the cart itself */
+            pointer-events: auto; 
         }
         .sticky-cart.active { transform: translateY(0); }
         
@@ -170,7 +194,7 @@
         /* --- MODAL QR CODE --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(248, 250, 252, 0.95); /* Semi-transparent base */
+            background: rgba(248, 250, 252, 0.95);
             backdrop-filter: blur(5px);
             z-index: 100;
             display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -212,7 +236,6 @@
         }
         .btn-back:active { background: var(--border); transform: scale(0.98); }
 
-        /* Error state */
         #error-state {
             display: none; text-align: center; padding: 50px 20px; color: var(--danger);
         }
@@ -258,8 +281,7 @@
             <h2 class="modal-title">Pesanan Siap!</h2>
             <p class="modal-desc">Tunjukkan QR Code ini kepada Kasir. <br><strong style="color:var(--accent); font-size:0.8rem;"><i class="fas fa-sun"></i> Tingkatkan kecerahan layar HP Anda</strong></p>
             
-            <div class="qr-container" id="qrcode-box">
-                </div>
+            <div class="qr-container" id="qrcode-box"></div>
 
             <button class="btn-back" onclick="closeOrderModal()">Ubah Pesanan</button>
         </div>
@@ -269,8 +291,9 @@
         const rp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
 
         let storeData = null;
-        let cart = {}; // Format: { id: qty }
-        let qrCodeInstance = null; // Menyimpan instance QR Code
+        let cart = {};  // Format: { id: qty }
+        let notes = {}; // Format: { id: "catatan pelanggan" }
+        let qrCodeInstance = null; 
 
         window.onload = () => {
             loadMenuFromURL();
@@ -280,17 +303,11 @@
             const urlParams = new URLSearchParams(window.location.search);
             const encodedData = urlParams.get('data');
 
-            if(!encodedData) {
-                return showError();
-            }
+            if(!encodedData) return showError();
 
             try {
-                // Decode base64 then parse JSON
                 const jsonStr = decodeURIComponent(atob(encodedData));
                 storeData = JSON.parse(jsonStr);
-                
-                // storeData format from pos.html:
-                // { n: "Store Name", m: [ [id, "Name", price, stock_or_minus1], ... ] }
                 
                 document.getElementById('store-name').innerText = storeData.n;
                 renderMenu();
@@ -319,29 +336,33 @@
                 const id = item[0];
                 const name = item[1];
                 const price = item[2];
-                const stock = item[3]; // -1 indicates tracking is off (Jasa)
+                const stock = item[3]; 
 
                 const stockDisplay = stock === -1 ? '<i class="fas fa-check"></i> Tersedia' : `Stok: ${stock}`;
                 const disableAdd = stock === 0 ? 'disabled style="opacity:0.5; background:var(--bg-base); color:var(--text-muted); border:1px solid var(--border);"' : '';
                 const btnText = stock === 0 ? 'Habis' : 'Tambah';
 
+                // ID harus menggunakan string interpolasi yang dikelilingi kutip agar ID PRD-XXX valid
                 html += `
                 <div class="menu-item">
-                    <div class="item-info">
-                        <div class="item-name">${name}</div>
-                        <div class="item-price">${rp(price)}</div>
-                        <span class="item-stock">${stockDisplay}</span>
+                    <div class="item-main">
+                        <div class="item-info">
+                            <div class="item-name">${name}</div>
+                            <div class="item-price">${rp(price)}</div>
+                            <span class="item-stock">${stockDisplay}</span>
+                        </div>
+                        
+                        <button class="btn-add" id="btn-add-${id}" onclick="updateQty('${id}', 1, ${stock})" ${disableAdd}>
+                            ${btnText}
+                        </button>
+                        
+                        <div class="qty-control" id="qty-ctrl-${id}">
+                            <button class="qty-btn" onclick="updateQty('${id}', -1, ${stock})"><i class="fas fa-minus" style="font-size:0.7rem;"></i></button>
+                            <div class="qty-display" id="qty-val-${id}">0</div>
+                            <button class="qty-btn" onclick="updateQty('${id}', 1, ${stock})"><i class="fas fa-plus" style="font-size:0.7rem;"></i></button>
+                        </div>
                     </div>
-                    
-                    <button class="btn-add" id="btn-add-${id}" onclick="updateQty(${id}, 1, ${stock})" ${disableAdd}>
-                        ${btnText}
-                    </button>
-                    
-                    <div class="qty-control" id="qty-ctrl-${id}">
-                        <button class="qty-btn" onclick="updateQty(${id}, -1, ${stock})"><i class="fas fa-minus" style="font-size:0.7rem;"></i></button>
-                        <div class="qty-display" id="qty-val-${id}">0</div>
-                        <button class="qty-btn" onclick="updateQty(${id}, 1, ${stock})"><i class="fas fa-plus" style="font-size:0.7rem;"></i></button>
-                    </div>
+                    <input type="text" class="item-note-input" id="note-${id}" placeholder="Catatan (opsional), cth: tanpa es, pedas..." onchange="updateNote('${id}', this.value)">
                 </div>
                 `;
             });
@@ -354,7 +375,6 @@
             
             let newQty = cart[id] + delta;
             
-            // Stock logic check
             if(maxStock !== -1) {
                 if(newQty > maxStock) {
                     alert(`Maaf, stok hanya tersisa ${maxStock}`);
@@ -364,16 +384,27 @@
 
             if(newQty <= 0) {
                 delete cart[id];
+                delete notes[id]; // Hapus catatan jika qty 0
                 document.getElementById(`btn-add-${id}`).style.display = 'block';
                 document.getElementById(`qty-ctrl-${id}`).style.display = 'none';
+                
+                let noteInput = document.getElementById(`note-${id}`);
+                noteInput.style.display = 'none';
+                noteInput.value = '';
             } else {
                 cart[id] = newQty;
                 document.getElementById(`btn-add-${id}`).style.display = 'none';
                 document.getElementById(`qty-ctrl-${id}`).style.display = 'flex';
                 document.getElementById(`qty-val-${id}`).innerText = newQty;
+                
+                document.getElementById(`note-${id}`).style.display = 'block';
             }
 
             updateCartUI();
+        }
+
+        function updateNote(id, val) {
+            notes[id] = val;
         }
 
         function updateCartUI() {
@@ -401,29 +432,34 @@
         function generateOrderQR() {
             if(Object.keys(cart).length === 0) return;
 
-            // Format payload to be scanned by pos.html: ORD@id:qty,id:qty
+            // Format payload to be scanned by pos.html: ORD@id:qty:catatan_encoded,id:qty:catatan_encoded
             let payload = "ORD@";
             let itemsStr = [];
+            
             for (const [id, qty] of Object.entries(cart)) {
-                itemsStr.push(`${id}:${qty}`);
+                let note = notes[id] || "";
+                let encodedNote = encodeURIComponent(note.trim());
+                
+                if (encodedNote) {
+                    itemsStr.push(`${id}:${qty}:${encodedNote}`);
+                } else {
+                    itemsStr.push(`${id}:${qty}`);
+                }
             }
             payload += itemsStr.join(',');
 
-            // Kosongkan kontainer QR sebelumnya jika ada
             const qrBox = document.getElementById("qrcode-box");
             qrBox.innerHTML = '';
 
-            // Generate QR Code berbentuk kotak
             qrCodeInstance = new QRCode(qrBox, {
                 text: payload,
                 width: 220,
                 height: 220,
                 colorDark : "#0F172A",
                 colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.M // Medium error correction level
+                correctLevel : QRCode.CorrectLevel.M 
             });
 
-            // Tampilkan Modal
             document.getElementById('order-modal').style.display = 'flex';
         }
 
