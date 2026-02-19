@@ -652,7 +652,7 @@
             const jsonStr = JSON.stringify(storeData);
             const encoded = btoa(encodeURIComponent(jsonStr)); 
             
-            let baseUrl = window.location.href.split('?')[0].replace('pos.html', '');
+            let baseUrl = window.location.href.split('?')[0].replace('pos.html', '').replace('pos', '').replace('#', '');
             if(!baseUrl.endsWith('/')) baseUrl += '/';
             const url = baseUrl + 'pos_order.html?data=' + encoded;
 
