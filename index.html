@@ -249,6 +249,10 @@
         .btn-primary { background: var(--text-main); color: white; border: none; padding: 14px 28px; border-radius: 100px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; width: 100%; text-align: center; }
         .game-canvas { background: #1C1917; border-radius: 16px; width: 100%; height: 200px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
 
+        /* Showcase scale effect */
+        .quran-showcase-item { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .quran-showcase-item:active { transform: scale(0.98); }
+
         /* --- MOBILE RESPONSIVE UTILITIES --- */
         .col-span-12 { grid-column: span 12; }
         .col-span-8 { grid-column: span 8; }
@@ -364,7 +368,7 @@
                 },
                 awards_title: "Penghargaan", view_all: "Lihat Semua",
                 opensource: { title: "Open Source", sub: "Kontributor Aktif" },
-                portfolio_link: { title: "Lihat Portfolio", sub: "17+ Proyek" },
+                portfolio_link: { title: "Lihat Portfolio", sub: "18+ Proyek" },
                 games: { title: "Arena JS", sub: "HTML5 Canvas", snake: "Tombol Panah", pong: "Gerak Mouse" },
 
                 tax_page: {
@@ -423,6 +427,7 @@
                 ],
                 portfolio_title: "Portfolio", portfolio_sub: "Proyek publik, pajak, & profesional.", nda_notice: "Beberapa proyek dilindungi NDA.",
                 projects: [
+                    { title: "Al-Quran Digital SPA", category: "Web App", desc: "Aplikasi Al-Quran dengan audio, transliterasi, kompas kiblat, & jadwal sholat.", tech: "JS, API, Adhan.js" },
                     { title: "Konsultasi Pajak AS", category: "Finance Service", desc: "Pajak Federal & 50 Negara Bagian. Refund $30k+.", tech: "IRS Certified" },
                     { title: "Cloud FinOps Engine", category: "Cloud Mgmt", desc: "Otomasi hemat biaya AWS/Azure.", tech: "Terraform, Python" },
                     { title: "Legal Doc Translator", category: "Legal Service", desc: "Terjemahan dokumen imigrasi US.", tech: "Notarized" },
@@ -520,6 +525,7 @@
                 ],
                 portfolio_title: "Portfolio", portfolio_sub: "Tax, cloud, legal, & tech projects.", nda_notice: "Some projects under NDA.",
                 projects: [
+                    { title: "Digital Quran SPA", category: "Web App", desc: "Quran app with audio, transliteration, Qibla compass & prayer times.", tech: "JS, API, Adhan.js" },
                     { title: "US Tax Consultation", category: "Finance Service", desc: "Federal & 50 State filing. Refund $30k+.", tech: "IRS Certified" },
                     { title: "Cloud FinOps Engine", category: "Cloud Mgmt", desc: "Automated cost saving system.", tech: "Terraform, Python" },
                     { title: "Legal Doc Translator", category: "Legal Service", desc: "Immigration doc translation.", tech: "Notarized" },
@@ -587,6 +593,17 @@
                     </div>
                     <div class="bento-item col-span-4" style="background:#1C1917; color:white; text-align:center; justify-content:center;"><i class="fab fa-github" style="font-size:3rem; margin-bottom:15px;"></i><h2>${txt.opensource.title}</h2><p style="color:#A8A29E;">${txt.opensource.sub}</p><a href="https://github.com/ansoridev" target="_blank" style="color:var(--accent-gold); text-decoration:none;">@ansoridev</a></div>
                     <div class="bento-item col-span-4" onclick="render('projects')" style="cursor:pointer; border: 2px dashed var(--accent-gold); justify-content:center; text-align:center;"><i class="fas fa-layer-group" style="font-size:2rem; color:var(--accent-gold); margin-bottom:10px;"></i><h3>${txt.portfolio_link.title}</h3><p style="color:var(--text-muted);">${txt.portfolio_link.sub}</p></div>
+                    
+                    <div class="bento-item col-span-12 quran-showcase-item" style="background: linear-gradient(135deg, var(--tax-green), #047857); color: white; cursor: pointer;" onclick="window.open('quran.html', '_blank')">
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
+                            <div>
+                                <h3 style="color: white; margin-bottom: 8px;"><i class="fas fa-book-quran" style="margin-right: 10px;"></i> ${currentLang === 'id' ? 'Al-Quran Digital & Jadwal Sholat' : 'Digital Quran & Prayer Times'} <span style="background: var(--accent-gold); color: white; font-size: 0.6rem; padding: 3px 8px; border-radius: 12px; vertical-align: middle; margin-left: 8px;">NEW</span></h3>
+                                <p style="color: var(--tax-soft); font-size: 0.95rem; max-width: 600px;">${currentLang === 'id' ? 'Aplikasi web interaktif dengan terjemahan, audio murottal, kompas kiblat, dan jadwal sholat otomatis.' : 'Interactive web app featuring translations, audio recitations, a Qibla compass, and automatic prayer times.'}</p>
+                            </div>
+                            <button style="background: white; color: var(--tax-green); border: none; padding: 12px 24px; border-radius: 100px; font-weight: 700; cursor: pointer; white-space: nowrap;">${currentLang === 'id' ? 'Buka Aplikasi' : 'Open App'} &rarr;</button>
+                        </div>
+                    </div>
+
                     <div class="bento-item col-span-12" style="background: var(--bg-surface);"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h3 style="margin:0;"><i class="fas fa-gamepad" style="color:var(--accent-gold); margin-right:10px;"></i> ${txt.games.title}</h3><span style="font-size:0.8rem; color:var(--text-muted);">${txt.games.sub}</span></div><div class="game-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;"><div><canvas id="snakeGame" class="game-canvas"></canvas><p style="text-align:center; font-size:0.8rem; margin-top:10px; color:var(--text-muted);"><i class="fas fa-keyboard"></i> ${txt.games.snake}</p></div><div><canvas id="pongGame" class="game-canvas"></canvas><p style="text-align:center; font-size:0.8rem; margin-top:10px; color:var(--text-muted);"><i class="fas fa-mouse-pointer"></i> ${txt.games.pong}</p></div></div></div>
                 </div>`;
         }
@@ -652,17 +669,19 @@
 
         function renderProjects() {
             const txt = db[currentLang];
-            const staticLinks = ["#", "#", "#", "https://github.com/ansoridev/cashierless-pay", "https://github.com/ansoridev/Si-Gateway", "#", "https://gunapedia.com", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"];
-            const staticIcons = ["fa-file-invoice-dollar", "fa-cloud", "fa-stamp", "fa-wifi", "fa-sms", "fa-traffic-light", "fa-server", "fa-database", "fa-truck-moving", "fa-university", "fa-user-md", "fa-boxes", "fa-vote-yea", "fa-seedling", "fa-cash-register", "fa-users-cog", "fa-bolt"];
-            const staticGrads = ["grad-tax", "grad-cloud", "grad-legal", "grad-1", "grad-3", "grad-2", "grad-4", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private"];
-            const publicStatus = [true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false];
+            // Added Quran app to the first index.
+            const staticLinks = ["quran.html", "#", "#", "#", "https://github.com/ansoridev/cashierless-pay", "https://github.com/ansoridev/Si-Gateway", "#", "https://gunapedia.com", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"];
+            const staticIcons = ["fa-book-quran", "fa-file-invoice-dollar", "fa-cloud", "fa-stamp", "fa-wifi", "fa-sms", "fa-traffic-light", "fa-server", "fa-database", "fa-truck-moving", "fa-university", "fa-user-md", "fa-boxes", "fa-vote-yea", "fa-seedling", "fa-cash-register", "fa-users-cog", "fa-bolt"];
+            const staticGrads = ["grad-3", "grad-tax", "grad-cloud", "grad-legal", "grad-1", "grad-3", "grad-2", "grad-4", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private"];
+            const publicStatus = [true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false];
+            
             const html = txt.projects.map((p, i) => {
                 const isPublic = publicStatus[i];
                 const privateTag = isPublic ? '' : '<span class="private-badge">NDA / PRIVATE</span>';
                 let specialTag = '';
-                if(i===0) specialTag = '<span class="tax-badge" style="background:var(--tax-soft); color:var(--tax-green);">TAX</span>';
-                if(i===1) specialTag = '<span class="cloud-badge" style="background:var(--cloud-soft); color:var(--cloud-blue);">CLOUD</span>';
-                if(i===2) specialTag = '<span class="legal-badge" style="background:var(--legal-soft); color:var(--legal-maroon);">LEGAL</span>';
+                if(i===1) specialTag = '<span class="tax-badge" style="background:var(--tax-soft); color:var(--tax-green);">TAX</span>';
+                if(i===2) specialTag = '<span class="cloud-badge" style="background:var(--cloud-soft); color:var(--cloud-blue);">CLOUD</span>';
+                if(i===3) specialTag = '<span class="legal-badge" style="background:var(--legal-soft); color:var(--legal-maroon);">LEGAL</span>';
                 const linkAction = isPublic ? `onclick="window.open('${staticLinks[i]}', '_blank')"` : '';
                 const cursorStyle = isPublic ? 'cursor:pointer' : 'cursor:default; opacity:0.9';
                 return `<div class="project-card fade-enter" style="${cursorStyle}" ${linkAction}><div class="project-art ${staticGrads[i]}"><i class="fas ${staticIcons[i]}"></i></div><div class="project-info"><div style="margin-bottom:5px;"><span style="font-size:0.75rem; font-weight:700; color:var(--accent-gold); letter-spacing:1px; text-transform:uppercase;">${p.category}</span> ${privateTag} ${specialTag}</div><h3 style="font-size:1.4rem;">${p.title}</h3><p style="color:var(--text-muted); font-size:0.95rem; margin-top:10px; line-height:1.6;">${p.desc}</p><div class="tech-stack"><i class="fas fa-code me-2"></i> ${p.tech}</div></div></div>`;
