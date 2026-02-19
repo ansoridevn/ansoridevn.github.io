@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Self-Order Menu</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+    <style>
+        :root {
+            --bg-base: #F8FAFC; 
+            --bg-surface: #FFFFFF;     
+            --accent: #D97706; 
+            --text-main: #0F172A; 
+            --text-muted: #64748B;     
+            --border: #E2E8F0;
+            --success: #059669;
+            --shadow-md: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden; /* Konten di scroll di dalam main */
+        }
+
+        header {
+            background: var(--bg-surface);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+        }
+
+        h1 { font-size: 1.2rem; font-weight: 700; color: var(--text-main); }
+        .subtitle { font-size: 0.8rem; color: var(--text-muted); }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 100px; /* Space for sticky cart */
+        }
+
+        /* Menu Item List */
+        .menu-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        
+        .item-info { flex: 1; padding-right: 10px; }
+        .item-name { font-weight: 700; font-size: 1rem; margin-bottom: 5px; }
+        .item-price { color: var(--success); font-weight: 600; font-size: 0.9rem; }
+        .item-stock { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block; }
+        
+        /* Add Button & Qty Control */
+        .btn-add {
+            background: var(--accent); color: white; border: none;
+            padding: 8px 15px; border-radius: 100px; font-weight: 600;
+            cursor: pointer; font-size: 0.9rem; transition: 0.2s;
+        }
+        .btn-add:active { transform: scale(0.95); }
+        
+        .qty-control {
+            display: none; /* Shown when qty > 0 */
+            align-items: center; background: var(--bg-base);
+            border: 1px solid var(--border); border-radius: 100px; padding: 2px;
+        }
+        .qty-btn {
+            background: white; border: 1px solid var(--border);
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1rem; cursor: pointer; color: var(--text-main);
+        }
+        .qty-display {
+            width: 30px; text-align: center; font-weight: 700; font-size: 0.9rem;
+        }
+
+        /* Sticky Bottom Cart */
+        .sticky-cart {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--bg-surface);
+            padding: 15px 20px;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 20; transform: translateY(100%); transition: transform 0.3s ease;
+        }
+        .sticky-cart.active { transform: translateY(0); }
+        
+        .cart-info { display: flex; flex-direction: column; }
+        .cart-total-items { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+        .cart-total-price { font-size: 1.2rem; font-weight: 800; color: var(--text-main); }
+        
+        .btn-checkout {
+            background: var(--text-main); color: white; border: none;
+            padding: 12px 25px; border-radius: 100px; font-weight: 700;
+            cursor: pointer; font-size: 1rem;
+        }
+
+        /* Barcode Modal Result */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 100;
+            display: none; flex-direction: column; align-items: center;
+            padding: 40px 20px; overflow-y: auto; text-align: center;
+        }
+        .modal-title { font-size: 1.5rem; margin-bottom: 10px; }
+        .modal-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
+        
+        .barcode-container {
+            background: white; padding: 20px; border-radius: 16px;
+            border: 2px dashed var(--border); margin-bottom: 30px;
+            width: 100%; max-width: 300px; overflow: hidden;
+        }
+        #barcode { width: 100%; height: auto; }
+
+        .btn-back {
+            background: transparent; color: var(--text-muted); border: none;
+            font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: underline;
+        }
+
+        /* Error state */
+        #error-state {
+            display: none; text-align: center; padding: 50px 20px; color: var(--danger);
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 id="store-name">Memuat Menu...</h1>
+        <div class="subtitle">Pilih menu Anda dan tunjukkan ke kasir</div>
+    </header>
+
+    <main id="menu-container">
+        <div style="text-align:center; padding:50px; color:var(--text-muted);">
+            <i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:10px;"></i><br>Loading...
+        </div>
+    </main>
+
+    <div id="error-state">
+        <i class="fas fa-exclamation-triangle" style="font-size:3rem; margin-bottom:15px;"></i>
+        <h2>Data Tidak Valid</h2>
+        <p>Silakan scan ulang QR Code dari kasir.</p>
+    </div>
+
+    <div class="sticky-cart" id="sticky-cart">
+        <div class="cart-info">
+            <span class="cart-total-items" id="total-items">0 Item</span>
+            <span class="cart-total-price" id="total-price">Rp 0</span>
+        </div>
+        <button class="btn-checkout" onclick="generateOrderBarcode()">Pesan <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <div class="modal" id="order-modal">
+        <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success); margin-bottom: 20px;"></i>
+        <h2 class="modal-title">Pesanan Siap!</h2>
+        <p class="modal-desc">Tunjukkan Barcode ini kepada Kasir untuk menyelesaikan pesanan Anda.</p>
+        
+        <div class="barcode-container">
+            <svg id="barcode"></svg>
+        </div>
+
+        <button class="btn-back" onclick="closeOrderModal()">Kembali ke Menu</button>
+    </div>
+
+    <script>
+        const rp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+
+        let storeData = null;
+        let cart = {}; // Format: { id: qty }
+
+        window.onload = () => {
+            loadMenuFromURL();
+        };
+
+        function loadMenuFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedData = urlParams.get('data');
+
+            if(!encodedData) {
+                return showError();
+            }
+
+            try {
+                // Decode base64 then parse JSON
+                const jsonStr = decodeURIComponent(atob(encodedData));
+                storeData = JSON.parse(jsonStr);
+                
+                // storeData format from pos.html:
+                // { n: "Store Name", m: [ [id, "Name", price, stock_or_minus1], ... ] }
+                
+                document.getElementById('store-name').innerText = storeData.n;
+                renderMenu();
+
+            } catch (err) {
+                console.error(err);
+                showError();
+            }
+        }
+
+        function showError() {
+            document.getElementById('menu-container').style.display = 'none';
+            document.getElementById('error-state').style.display = 'block';
+            document.getElementById('store-name').innerText = "Gagal Memuat";
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menu-container');
+            if(!storeData || !storeData.m || storeData.m.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:50px;">Menu kosong.</div>`;
+                return;
+            }
+
+            let html = '';
+            storeData.m.forEach(item => {
+                const id = item[0];
+                const name = item[1];
+                const price = item[2];
+                const stock = item[3]; // -1 indicates tracking is off (Jasa)
+
+                const stockDisplay = stock === -1 ? 'Tersedia' : `Stok: ${stock}`;
+                const disableAdd = stock === 0 ? 'disabled style="opacity:0.5;"' : '';
+                const btnText = stock === 0 ? 'Habis' : 'Tambah';
+
+                html += `
+                <div class="menu-item">
+                    <div class="item-info">
+                        <div class="item-name">${name}</div>
+                        <div class="item-price">${rp(price)}</div>
+                        <span class="item-stock">${stockDisplay}</span>
+                    </div>
+                    
+                    <button class="btn-add" id="btn-add-${id}" onclick="updateQty(${id}, 1, ${stock})" ${disableAdd}>
+                        ${btnText}
+                    </button>
+                    
+                    <div class="qty-control" id="qty-ctrl-${id}">
+                        <button class="qty-btn" onclick="updateQty(${id}, -1, ${stock})">-</button>
+                        <div class="qty-display" id="qty-val-${id}">0</div>
+                        <button class="qty-btn" onclick="updateQty(${id}, 1, ${stock})">+</button>
+                    </div>
+                </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function updateQty(id, delta, maxStock) {
+            if(!cart[id]) cart[id] = 0;
+            
+            let newQty = cart[id] + delta;
+            
+            // Stock logic check
+            if(maxStock !== -1) {
+                if(newQty > maxStock) {
+                    alert(`Maaf, stok hanya tersisa ${maxStock}`);
+                    return;
+                }
+            }
+
+            if(newQty <= 0) {
+                delete cart[id];
+                document.getElementById(`btn-add-${id}`).style.display = 'block';
+                document.getElementById(`qty-ctrl-${id}`).style.display = 'none';
+            } else {
+                cart[id] = newQty;
+                document.getElementById(`btn-add-${id}`).style.display = 'none';
+                document.getElementById(`qty-ctrl-${id}`).style.display = 'flex';
+                document.getElementById(`qty-val-${id}`).innerText = newQty;
+            }
+
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            for (const [id, qty] of Object.entries(cart)) {
+                totalItems += qty;
+                // Find item price from storeData.m (Array: [id, name, price, stock])
+                const itemData = storeData.m.find(i => i[0] == id);
+                if(itemData) {
+                    totalPrice += (itemData[2] * qty);
+                }
+            }
+
+            const cartElement = document.getElementById('sticky-cart');
+            if(totalItems > 0) {
+                cartElement.classList.add('active');
+                document.getElementById('total-items').innerText = `${totalItems} Item`;
+                document.getElementById('total-price').innerText = rp(totalPrice);
+            } else {
+                cartElement.classList.remove('active');
+            }
+        }
+
+        function generateOrderBarcode() {
+            if(Object.keys(cart).length === 0) return;
+
+            // Format payload to be scanned by pos.html:
+            // Prefix: ORD@
+            // Data: id:qty,id:qty
+            
+            let payload = "ORD@";
+            let itemsStr = [];
+            
+            for (const [id, qty] of Object.entries(cart)) {
+                itemsStr.push(`${id}:${qty}`);
+            }
+            
+            payload += itemsStr.join(',');
+
+            // Show Modal
+            document.getElementById('order-modal').style.display = 'flex';
+            
+            // Generate Barcode using JsBarcode
+            // Option valid: text must be string, format CODE128
+            JsBarcode("#barcode", payload, {
+                format: "CODE128",
+                lineColor: "#0F172A",
+                width: 2,
+                height: 80,
+                displayValue: true,
+                fontSize: 14,
+                textMargin: 6
+            });
+        }
+
+        function closeOrderModal() {
+            document.getElementById('order-modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
