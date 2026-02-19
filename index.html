@@ -6,7 +6,7 @@
     
     <title>Ahmad Ansori | Fullstack Developer, Cloud Expert & Konsultan Pajak AS</title>
     <meta name="description" content="Ahmad Ansori adalah Fullstack Developer, pakar Cloud (AWS/Azure), Penerjemah Tersumpah, dan Konsultan Pajak Amerika Serikat berlisensi. Siap melayani kebutuhan IT dan legal Anda.">
-    <meta name="keywords" content="Ahmad Ansori, Fullstack Developer Lampung, Konsultan Pajak AS Indonesia, Cloud Architect AWS, Penerjemah Tersumpah USCIS, Jasa IT Kota Metro">
+    <meta name="keywords" content="Ahmad Ansori, Fullstack Developer Lampung, Konsultan Pajak AS Indonesia, Cloud Architect AWS, Penerjemah Tersumpah USCIS, Jasa IT Kota Metro, Aplikasi Kasir UMKM Gratis">
     <meta name="author" content="Ahmad Ansori">
 
     <meta property="og:title" content="Ahmad Ansori | Tech & Legal Expert">
@@ -49,7 +49,7 @@
         "https://github.com/ansoridev",
         "https://id.wikipedia.org/wiki/Ahmad_Ansori"
       ],
-      "knowsAbout": ["Python", "Cloud Computing", "US Tax Law", "Internet of Things", "Web Development"]
+      "knowsAbout": ["Python", "Cloud Computing", "US Tax Law", "Internet of Things", "Web Development", "Point of Sales"]
     }
     </script>
     <script type="application/ld+json">
@@ -176,7 +176,7 @@
         /* --- SERVICE GRID (Responsive) --- */
         .service-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Default Desktop: 2 Columns */
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
 
@@ -250,8 +250,8 @@
         .game-canvas { background: #1C1917; border-radius: 16px; width: 100%; height: 200px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
 
         /* Showcase scale effect */
-        .quran-showcase-item { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .quran-showcase-item:active { transform: scale(0.98); }
+        .showcase-item { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .showcase-item:active { transform: scale(0.98); }
 
         /* --- MOBILE RESPONSIVE UTILITIES --- */
         .col-span-12 { grid-column: span 12; }
@@ -259,31 +259,24 @@
         .col-span-6 { grid-column: span 6; }
         .col-span-4 { grid-column: span 4; }
 
-        /* !IMPORTANT: BREAKPOINT FOR MOBILE */
         @media (max-width: 900px) {
             .bento-grid { 
-                grid-template-columns: 1fr; /* Force Single Column on Mobile */
+                grid-template-columns: 1fr; 
                 gap: 16px; 
             }
             .bento-item { padding: 24px 20px; }
             
-            /* Override ALL spans to take full width on mobile */
             .col-span-12, .col-span-8, .col-span-6, .col-span-4 { grid-column: span 1 !important; }
             
-            /* Special: Stat cards on mobile can be 2 per row if needed, but 1 is safer for content */
             .stat-card { grid-column: span 1 !important; padding: 15px; }
             
             .hero-title { font-size: 2.5rem; }
             .nav-wrapper { top: 10px; width: 96%; }
             #app { padding: 80px 16px 40px 16px; }
             
-            /* Force Service Grid to Stack on Mobile */
             .service-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
-            
-            /* Game Grid Stack */
             .game-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
             
-            /* Resume Adjustments */
             .timeline-item { padding-left: 15px; }
             .award-item { flex-direction: row; align-items: flex-start; }
         }
@@ -368,7 +361,7 @@
                 },
                 awards_title: "Penghargaan", view_all: "Lihat Semua",
                 opensource: { title: "Open Source", sub: "Kontributor Aktif" },
-                portfolio_link: { title: "Lihat Portfolio", sub: "18+ Proyek" },
+                portfolio_link: { title: "Lihat Portfolio", sub: "19+ Proyek" },
                 games: { title: "Arena JS", sub: "HTML5 Canvas", snake: "Tombol Panah", pong: "Gerak Mouse" },
 
                 tax_page: {
@@ -427,6 +420,7 @@
                 ],
                 portfolio_title: "Portfolio", portfolio_sub: "Proyek publik, pajak, & profesional.", nda_notice: "Beberapa proyek dilindungi NDA.",
                 projects: [
+                    { title: "Ansori POS (Sistem Kasir)", category: "Web App / PWA", desc: "Aplikasi kasir 100% offline, sangat ringan, dan dikhususkan untuk UMKM/usaha kecil. Tanpa biaya langganan.", tech: "Vanilla JS, HTML5, LocalStorage" },
                     { title: "Al-Quran Digital SPA", category: "Web App", desc: "Aplikasi Al-Quran dengan audio, transliterasi, kompas kiblat, & jadwal sholat.", tech: "JS, API, Adhan.js" },
                     { title: "Konsultasi Pajak AS", category: "Finance Service", desc: "Pajak Federal & 50 Negara Bagian. Refund $30k+.", tech: "IRS Certified" },
                     { title: "Cloud FinOps Engine", category: "Cloud Mgmt", desc: "Otomasi hemat biaya AWS/Azure.", tech: "Terraform, Python" },
@@ -525,6 +519,7 @@
                 ],
                 portfolio_title: "Portfolio", portfolio_sub: "Tax, cloud, legal, & tech projects.", nda_notice: "Some projects under NDA.",
                 projects: [
+                    { title: "Ansori POS", category: "Web App / PWA", desc: "A 100% offline, lightweight POS system tailored for SMEs. No subscription fees or hidden costs.", tech: "Vanilla JS, HTML5, LocalStorage" },
                     { title: "Digital Quran SPA", category: "Web App", desc: "Quran app with audio, transliteration, Qibla compass & prayer times.", tech: "JS, API, Adhan.js" },
                     { title: "US Tax Consultation", category: "Finance Service", desc: "Federal & 50 State filing. Refund $30k+.", tech: "IRS Certified" },
                     { title: "Cloud FinOps Engine", category: "Cloud Mgmt", desc: "Automated cost saving system.", tech: "Terraform, Python" },
@@ -584,6 +579,7 @@
                         <div><button class="btn-primary" onclick="render('contact')">${txt.profile.btn_collab}</button><a href="${data.profile.resumeLink}" target="_blank" style="margin-left:15px; text-decoration:none; color:var(--text-main); font-weight:600;">${txt.profile.btn_resume} &rarr;</a></div>
                     </div>
                     <div class="bento-item col-span-4" style="padding:0;"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Ahmadansori.png" style="width:100%; height:100%; object-fit:cover;" alt="Potret Ahmad Ansori Developer"></div>
+                    
                     <div class="bento-item col-span-4" style="background:var(--bg-surface);">
                         <h3>🏆 ${txt.awards_title}</h3>
                         <div style="margin-top:20px;">${recentAwards}</div>
@@ -591,20 +587,47 @@
                             <button onclick="render('resume')" style="background:none; border:none; color:var(--text-main); cursor:pointer; font-weight:600; padding:0; font-size:0.85rem;">${txt.view_all} &rarr;</button>
                         </div>
                     </div>
-                    <div class="bento-item col-span-4" style="background:#1C1917; color:white; text-align:center; justify-content:center;"><i class="fab fa-github" style="font-size:3rem; margin-bottom:15px;"></i><h2>${txt.opensource.title}</h2><p style="color:#A8A29E;">${txt.opensource.sub}</p><a href="https://github.com/ansoridev" target="_blank" style="color:var(--accent-gold); text-decoration:none;">@ansoridev</a></div>
-                    <div class="bento-item col-span-4" onclick="render('projects')" style="cursor:pointer; border: 2px dashed var(--accent-gold); justify-content:center; text-align:center;"><i class="fas fa-layer-group" style="font-size:2rem; color:var(--accent-gold); margin-bottom:10px;"></i><h3>${txt.portfolio_link.title}</h3><p style="color:var(--text-muted);">${txt.portfolio_link.sub}</p></div>
                     
-                    <div class="bento-item col-span-12 quran-showcase-item" style="background: linear-gradient(135deg, var(--tax-green), #047857); color: white; cursor: pointer;" onclick="window.open('quran.html', '_blank')">
+                    <div class="bento-item col-span-4" style="background:#1C1917; color:white; text-align:center; justify-content:center;"><i class="fab fa-github" style="font-size:3rem; margin-bottom:15px;"></i><h2>${txt.opensource.title}</h2><p style="color:#A8A29E;">${txt.opensource.sub}</p><a href="https://github.com/ansoridev" target="_blank" style="color:var(--accent-gold); text-decoration:none;">@ansoridev</a></div>
+                    
+                    <div class="bento-item col-span-4" onclick="render('projects')" style="cursor:pointer; border: 2px dashed var(--accent-gold); justify-content:center; text-align:center;"><i class="fas fa-layer-group" style="font-size:2rem; color:var(--accent-gold); margin-bottom:10px;"></i><h3>${txt.portfolio_link.title}</h3><p style="color:var(--text-muted);">${txt.portfolio_link.sub}</p></div>
+
+                    <div class="bento-item col-span-12 showcase-item" style="background: linear-gradient(135deg, #1C1917, #334155); color: white; cursor: pointer;" onclick="window.open('pos.html', '_blank')">
                         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
                             <div>
-                                <h3 style="color: white; margin-bottom: 8px;"><i class="fas fa-book-quran" style="margin-right: 10px;"></i> ${currentLang === 'id' ? 'Al-Quran Digital & Jadwal Sholat' : 'Digital Quran & Prayer Times'} <span style="background: var(--accent-gold); color: white; font-size: 0.6rem; padding: 3px 8px; border-radius: 12px; vertical-align: middle; margin-left: 8px;">NEW</span></h3>
+                                <h3 style="color: white; margin-bottom: 8px;"><i class="fas fa-cash-register" style="margin-right: 10px;"></i> ${currentLang === 'id' ? 'Ansori POS - Sistem Kasir UMKM' : 'Ansori POS - Free SME Cashier'} <span style="background: var(--accent-gold); color: white; font-size: 0.6rem; padding: 3px 8px; border-radius: 12px; vertical-align: middle; margin-left: 8px;">FREE APP</span></h3>
+                                <p style="color: #cbd5e1; font-size: 0.95rem; max-width: 600px;">${currentLang === 'id' ? 'Aplikasi POS / Kasir 100% Offline, tanpa langganan, dan siap pakai. Cocok untuk F&B, Retail, maupun Jasa.' : '100% Offline Point of Sale Web App. No subscription fees, highly responsive, and tailored for small businesses.'}</p>
+                            </div>
+                            <button style="background: var(--accent-gold); color: white; border: none; padding: 12px 24px; border-radius: 100px; font-weight: 700; cursor: pointer; white-space: nowrap;">${currentLang === 'id' ? 'Gunakan Gratis' : 'Use for Free'} &rarr;</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bento-item col-span-12 showcase-item" style="background: linear-gradient(135deg, var(--tax-green), #047857); color: white; cursor: pointer;" onclick="window.open('quran.html', '_blank')">
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
+                            <div>
+                                <h3 style="color: white; margin-bottom: 8px;"><i class="fas fa-book-quran" style="margin-right: 10px;"></i> ${currentLang === 'id' ? 'Al-Quran Digital & Jadwal Sholat' : 'Digital Quran & Prayer Times'}</h3>
                                 <p style="color: var(--tax-soft); font-size: 0.95rem; max-width: 600px;">${currentLang === 'id' ? 'Aplikasi web interaktif dengan terjemahan, audio murottal, kompas kiblat, dan jadwal sholat otomatis.' : 'Interactive web app featuring translations, audio recitations, a Qibla compass, and automatic prayer times.'}</p>
                             </div>
                             <button style="background: white; color: var(--tax-green); border: none; padding: 12px 24px; border-radius: 100px; font-weight: 700; cursor: pointer; white-space: nowrap;">${currentLang === 'id' ? 'Buka Aplikasi' : 'Open App'} &rarr;</button>
                         </div>
                     </div>
 
-                    <div class="bento-item col-span-12" style="background: var(--bg-surface);"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h3 style="margin:0;"><i class="fas fa-gamepad" style="color:var(--accent-gold); margin-right:10px;"></i> ${txt.games.title}</h3><span style="font-size:0.8rem; color:var(--text-muted);">${txt.games.sub}</span></div><div class="game-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;"><div><canvas id="snakeGame" class="game-canvas"></canvas><p style="text-align:center; font-size:0.8rem; margin-top:10px; color:var(--text-muted);"><i class="fas fa-keyboard"></i> ${txt.games.snake}</p></div><div><canvas id="pongGame" class="game-canvas"></canvas><p style="text-align:center; font-size:0.8rem; margin-top:10px; color:var(--text-muted);"><i class="fas fa-mouse-pointer"></i> ${txt.games.pong}</p></div></div></div>
+                    <div class="bento-item col-span-12" style="background: var(--bg-surface);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                            <h3 style="margin:0;"><i class="fas fa-gamepad" style="color:var(--accent-gold); margin-right:10px;"></i> ${txt.games.title}</h3>
+                            <span style="font-size:0.8rem; color:var(--text-muted);">${txt.games.sub}</span>
+                        </div>
+                        <div class="game-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                            <div>
+                                <canvas id="snakeGame" class="game-canvas"></canvas>
+                                <p style="text-align:center; font-size:0.8rem; margin-top:10px; color:var(--text-muted);"><i class="fas fa-keyboard"></i> ${txt.games.snake}</p>
+                            </div>
+                            <div>
+                                <canvas id="pongGame" class="game-canvas"></canvas>
+                                <p style="text-align:center; font-size:0.8rem; margin-top:10px; color:var(--text-muted);"><i class="fas fa-mouse-pointer"></i> ${txt.games.pong}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>`;
         }
 
@@ -669,19 +692,23 @@
 
         function renderProjects() {
             const txt = db[currentLang];
-            // Added Quran app to the first index.
-            const staticLinks = ["quran.html", "#", "#", "#", "https://github.com/ansoridev/cashierless-pay", "https://github.com/ansoridev/Si-Gateway", "#", "https://gunapedia.com", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"];
-            const staticIcons = ["fa-book-quran", "fa-file-invoice-dollar", "fa-cloud", "fa-stamp", "fa-wifi", "fa-sms", "fa-traffic-light", "fa-server", "fa-database", "fa-truck-moving", "fa-university", "fa-user-md", "fa-boxes", "fa-vote-yea", "fa-seedling", "fa-cash-register", "fa-users-cog", "fa-bolt"];
-            const staticGrads = ["grad-3", "grad-tax", "grad-cloud", "grad-legal", "grad-1", "grad-3", "grad-2", "grad-4", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private"];
-            const publicStatus = [true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false];
+            
+            // Ditambahkan array index 0 untuk Ansori POS
+            const staticLinks = ["pos.html", "quran.html", "#", "#", "#", "https://github.com/ansoridev/cashierless-pay", "https://github.com/ansoridev/Si-Gateway", "#", "https://gunapedia.com", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"];
+            const staticIcons = ["fa-cash-register", "fa-book-quran", "fa-file-invoice-dollar", "fa-cloud", "fa-stamp", "fa-wifi", "fa-sms", "fa-traffic-light", "fa-server", "fa-database", "fa-truck-moving", "fa-university", "fa-user-md", "fa-boxes", "fa-vote-yea", "fa-seedling", "fa-cash-register", "fa-users-cog", "fa-bolt"];
+            const staticGrads = ["grad-1", "grad-3", "grad-tax", "grad-cloud", "grad-legal", "grad-1", "grad-3", "grad-2", "grad-4", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private", "grad-private"];
+            const publicStatus = [true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false];
             
             const html = txt.projects.map((p, i) => {
                 const isPublic = publicStatus[i];
                 const privateTag = isPublic ? '' : '<span class="private-badge">NDA / PRIVATE</span>';
                 let specialTag = '';
-                if(i===1) specialTag = '<span class="tax-badge" style="background:var(--tax-soft); color:var(--tax-green);">TAX</span>';
-                if(i===2) specialTag = '<span class="cloud-badge" style="background:var(--cloud-soft); color:var(--cloud-blue);">CLOUD</span>';
-                if(i===3) specialTag = '<span class="legal-badge" style="background:var(--legal-soft); color:var(--legal-maroon);">LEGAL</span>';
+                
+                // Menyesuaikan index logika label spesial karena POS bertambah di index 0
+                if(i===2) specialTag = '<span class="tax-badge" style="background:var(--tax-soft); color:var(--tax-green);">TAX</span>';
+                if(i===3) specialTag = '<span class="cloud-badge" style="background:var(--cloud-soft); color:var(--cloud-blue);">CLOUD</span>';
+                if(i===4) specialTag = '<span class="legal-badge" style="background:var(--legal-soft); color:var(--legal-maroon);">LEGAL</span>';
+                
                 const linkAction = isPublic ? `onclick="window.open('${staticLinks[i]}', '_blank')"` : '';
                 const cursorStyle = isPublic ? 'cursor:pointer' : 'cursor:default; opacity:0.9';
                 return `<div class="project-card fade-enter" style="${cursorStyle}" ${linkAction}><div class="project-art ${staticGrads[i]}"><i class="fas ${staticIcons[i]}"></i></div><div class="project-info"><div style="margin-bottom:5px;"><span style="font-size:0.75rem; font-weight:700; color:var(--accent-gold); letter-spacing:1px; text-transform:uppercase;">${p.category}</span> ${privateTag} ${specialTag}</div><h3 style="font-size:1.4rem;">${p.title}</h3><p style="color:var(--text-muted); font-size:0.95rem; margin-top:10px; line-height:1.6;">${p.desc}</p><div class="tech-stack"><i class="fas fa-code me-2"></i> ${p.tech}</div></div></div>`;
@@ -710,7 +737,6 @@
             const box = 20; let snake = [{x: 10 * box, y: 10 * box}]; let food = {x: Math.floor(Math.random()*(cvs.width/box))*box, y: Math.floor(Math.random()*(cvs.height/box))*box}; let d = "RIGHT"; let score = 0;
             
             function changeDirection(e) {
-                // Prevent default scrolling for arrow keys
                 if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
                     e.preventDefault();
                 }
@@ -721,7 +747,6 @@
             }
             document.addEventListener("keydown", changeDirection);
             
-            // Cleanup event listener when leaving page
             cvs.gameCleanup = () => document.removeEventListener("keydown", changeDirection);
 
             function drawSnake() { ctx.fillStyle = "#1C1917"; ctx.fillRect(0, 0, cvs.width, cvs.height); for(let i=0; i<snake.length; i++) { ctx.fillStyle = (i==0)?"#D97706":"#FEF3C7"; ctx.fillRect(snake[i].x, snake[i].y, box, box); } ctx.fillStyle = "red"; ctx.fillRect(food.x, food.y, box, box); let snakeX = snake[0].x; let snakeY = snake[0].y; if(d=="LEFT") snakeX-=box; if(d=="UP") snakeY-=box; if(d=="RIGHT") snakeX+=box; if(d=="DOWN") snakeY+=box; if(snakeX<0 || snakeX>=cvs.width || snakeY<0 || snakeY>=cvs.height) { snake = [{x: 10 * box, y: 10 * box}]; score = 0; } if(Math.abs(snakeX-food.x)<box && Math.abs(snakeY-food.y)<box) { score++; food = {x: Math.floor(Math.random()*(cvs.width/box))*box, y: Math.floor(Math.random()*(cvs.height/box))*box}; } else { snake.pop(); } let newHead = {x: snakeX, y: snakeY}; snake.unshift(newHead); ctx.fillStyle = "white"; ctx.font = "20px Arial"; ctx.fillText("Score: " + score, 10, 25); }
@@ -744,11 +769,9 @@
             if (snakeCvs && snakeCvs.gameCleanup) snakeCvs.gameCleanup();
         }
 
-        // Core Render Function using Hash Routing
         function render(page) {
             stopGames();
             
-            // Update URL Hash for GitHub Pages compatibility
             const hashPage = page === 'home' ? '' : `#${page}`;
             if(window.location.hash !== hashPage) {
                 window.history.pushState({page: page}, "", hashPage || window.location.pathname);
@@ -777,26 +800,20 @@
             window.scrollTo(0,0);
         }
         
-        // Listen to browser Back/Forward buttons (Hash changes)
         window.addEventListener('popstate', () => {
             const currentHash = window.location.hash.replace('#', '') || 'home';
             render(currentHash);
         });
 
-        // Initialize App based on current Hash
         window.addEventListener('DOMContentLoaded', () => {
-             // Language logic is handled by the splash screen on first load
-             // But if someone shares a direct link (e.g., ahmadansori.com/#tax), we catch it here:
              const currentHash = window.location.hash.replace('#', '');
              if (currentHash) {
-                 // Hide splash screen immediately if it's a direct deep-link
                  const splash = document.getElementById('lang-splash');
                  if(splash) splash.style.display = 'none';
                  render(currentHash);
              }
         });
 
-        // Handle Resize for Canvas
         window.addEventListener('resize', () => {
             if(document.getElementById('snakeGame')) { stopGames(); initGames(); }
         });
