@@ -10,7 +10,7 @@
         const newDomain = "https://gunapedia.com";
         
         // Grab the current path, query parameters (?), and hash fragments (#)
-        const currentPath = window.location.pathname;
+        const currentPath = window.location.pathname.replace("gunapedia", "");
         const currentSearch = window.location.search;
         const currentHash = window.location.hash;
         
