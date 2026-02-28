@@ -1,4 +1,4 @@
-const CACHE_NAME = 'skincare-cache-v1';
+const CACHE_NAME = 'skincare-cache-v2';
 
 // Daftar file yang wajib disimpan di HP agar bisa offline
 const urlsToCache = [
